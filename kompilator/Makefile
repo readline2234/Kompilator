@@ -2,7 +2,7 @@ CC=gcc
 LEX=flex
 YACC=bison
 LD=gcc
-CPP=g++
+CPP=g++ -std=c++11
 
 all:	leks
 

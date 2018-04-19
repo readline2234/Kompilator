@@ -10,3 +10,5 @@ result = 1.23 B *
 result = result C /
 result = result result +
 
+result = a 3 =
+

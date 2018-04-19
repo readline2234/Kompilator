@@ -8,6 +8,7 @@
 #include <sstream>
 #include <stack>
 #include <fstream>
+#include <map>
 
 #define INFILE_ERROR 1
 #define OUTFILE_ERROR 2
@@ -21,7 +22,12 @@ extern FILE *yyout;
 
 using namespace std;
 
+struct element {
+
+};
+
 stack <string> * s = new stack<string>;
+map <string, int> symbols;
 fstream writer("out3.txt",std::ios::out);
 %}
 %union 
@@ -73,6 +79,22 @@ wyr
                                     std::cout << std::endl << "y: " << y << std::endl;
                                     s->push("result");
                                     writer << "result = " << y << " " << x << " -" << std::endl;
+                                }
+        |wyr '=' skladnik       {
+                                    printf("wyrazenie z = \n"); 
+                                    writeLexValue("=");
+                                    string x,y; 
+                                    x = s->top(); 
+                                    s->pop();
+                                    y = s->top();
+                                    s->pop();
+                                    std::cout << std::endl << "x: " << x << std::endl;
+                                    std::cout << std::endl << "y: " << y << std::endl;
+                                    s->push("result");
+                                    writer << "result = " << y << " " << x << " =" << std::endl;
+                                    //DODAWANIE DO TABLICY SYMBOLI TUTAJ
+                                    cout << "PAIR: " << x << " " << y << endl;
+                                    symbols.insert ( std::pair<string,int>(x,y)
                                 }
                                 
 	|skladnik		{printf("wyrazenie pojedyncze \n");}
