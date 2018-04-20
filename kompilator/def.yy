@@ -96,41 +96,58 @@ wyr
                                     outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " +" << endl;
                                     
                                     s->push(e);
-                                    
-                                    
-/*                                    string x,y; 
-                                    x = s->top(); 
-                                    s->pop();
-                                    y = s->top();
-                                    s->pop();
-                                    std::cout << std::endl << "x: " << x << std::endl;
-                                    std::cout << std::endl << "y: " << y << std::endl;
-                                    s->push("result");
-                                    writer << "result = " << y << " " << x << " +" << std::endl;*/
                                 }
 	|wyr '-' skladnik	{
                                     printf("wyrazenie z - \n"); 
                                     writeLexValue("-");
-/*                                    string x,y; 
-                                    x = s->top(); 
+                                    
+                                    cout << "Stack size :" << s->size() << endl;
+                                    
+                                    element e1 = s->top();
                                     s->pop();
-                                    y = s->top();
-                                    s->pop();
-                                    std::cout << std::endl << "x: " << x << std::endl;
-                                    std::cout << std::endl << "y: " << y << std::endl;
-                                    s->push("result");
-                                    writer << "result = " << y << " " << x << " -" << std::endl;*/
+                                    
+                                    element e2 = s->top();
+                                    s->pop(); 
+
+                                    element e;
+                                    e.type = id;
+                                    
+                                    
+                                    stringstream ss;
+                                    ss << "_tmp" << tempVariableCount;
+                                    e.varName = ss.str();
+                                    tempVariableCount++;
+                                    
+                                    outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " -" << endl;
+                                    
+                                    s->push(e);
                                 }
-        |wyr '=' skladnik       {
+        |wyr '=' wyr       {
                                     printf("wyrazenie z = \n"); 
                                     writeLexValue("=");
-/*                                    string x,y; 
-                                    x = s->top(); 
-                                    s->pop();*/
-/*                                     std::cout << std::endl << "x: " << x << std::endl; */
+                                    
+                                    cout << "STACK SIZE: " << s->size() << endl;
+                                    
+                                    element e1;
+                                    e1 = s->top(); 
+                                    s->pop();
+                                    
+                                    element e2;
+                                    e2 = s->top();
+                                    s->pop();
+                                    
+                                    element e;
+                                    e.type = id;
+                                    
+                                    stringstream ss;
+                                    ss << "_tmp" << tempVariableCount;
+                                    e.varName = ss.str();
+                                    tempVariableCount++;
+                                    
+                                    outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " =" << endl;
+                                    
+                                    
                                     //DODAWANIE DO TABLICY SYMBOLI TUTAJ
-                                    
-                                    
                                     
 /*                                    symbols.insert ( std::pair<int,element>(x,y) */
                                 }
@@ -141,28 +158,55 @@ skladnik
 	:skladnik '*' czynnik	{
                                     printf("skladnik z * \n"); 
                                     writeLexValue("*");
-/*                                    string x,y; 
-                                    x = s->top(); 
+                                                                        
+                                    cout << "Stack size :" << s->size() << endl;
+                                    
+                                    element e1 = s->top();
                                     s->pop();
-                                    y = s->top();
-                                    s->pop();*/
-/*                                     std::cout << std::endl << "x: " << x << std::endl; */
-/*                                     std::cout << std::endl << "y: " << y << std::endl; */
-/*                                    s->push("result");
-                                    writer << "result = " << y << " " << x << " *" << std::endl;*/
+                                    
+                                    element e2 = s->top();
+                                    s->pop(); 
+
+                                    element e;
+                                    e.type = id;
+                                    
+                                    
+                                    stringstream ss;
+                                    ss << "_tmp" << tempVariableCount;
+                                    e.varName = ss.str();
+                                    tempVariableCount++;
+                                    
+                                    outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " *" << endl;
+                                    
+                                    s->push(e);
+
                                 }
 	|skladnik '/' czynnik	{
                                     printf("skladnik z / \n");
                                     writeLexValue("/");
-/*                                    string x,y; 
-                                    x = s->top(); 
+                                    
+                                    cout << "Stack size :" << s->size() << endl;
+                                    
+                                    element e1 = s->top();
                                     s->pop();
-                                    y = s->top();
-                                    s->pop();*/
-/*                                     std::cout << std::endl << "x: " << x << std::endl; */
-/*                                     std::cout << std::endl << "y: " << y << std::endl; */
-/*                                    s->push("result");
-                                    writer << "result = " << y << " " << x << " /" << std::endl;*/
+                                    
+                                    element e2 = s->top();
+                                    s->pop(); 
+
+                                    element e;
+                                    e.type = id;
+                                    
+                                    
+                                    stringstream ss;
+                                    ss << "_tmp" << tempVariableCount;
+                                    e.varName = ss.str();
+                                    tempVariableCount++;
+                                    
+                                    outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " /" << endl;
+                                    
+                                    s->push(e);
+                              
+
                                 }
 	|czynnik		{printf("skladnik pojedynczy \n");}
 	;
@@ -171,10 +215,15 @@ czynnik
                                     printf("czynnik znakowy (zmienna) - %s\n",$1); 
                                     fprintf(yyout, "%s ", $1);
                                     printf("\n>>PUSHING AT STACK<<\n");
-/*                                    std::stringstream ss;
-                                    ss << $1;
-                                    s->push(ss.str());*/
                                     
+                                    element e;
+                                    e.type = id;
+                                    
+                                    stringstream ss;
+                                    ss << $1;
+                                    e.varName = ss.str();
+
+                                    s->push(e);
                                 } 
         |LZ                     {
                                     printf("czynnik liczba zmiennoprzecinkowa %lf\n",$1); 
