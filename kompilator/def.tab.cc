@@ -87,11 +87,33 @@ extern FILE *yyout;
 
 using namespace std;
 
-stack <string> * s = new stack<string>;
-map <string, int> symbols;
-fstream writer("out3.txt",std::ios::out);
+union vals {
+    int intVal;
+    double doubleVal;
+    char * textVal;
+};
 
-#line 95 "def.tab.cc" /* yacc.c:339  */
+enum types{
+    lc = 0,
+    lz = 1,
+    id = 2
+};
+
+struct element {
+    types type;
+    string varName;
+    vals val;
+};
+
+stack <element> * s = new stack<element>;
+map <int, element> symbols;
+
+fstream outTriples("outTriples.txt",std::ios::out);
+fstream outLexValue("outLexValue.txt",std::ios::out);
+
+int tempVariableCount = 0;
+
+#line 117 "def.tab.cc" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -152,13 +174,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 30 "def.yy" /* yacc.c:355  */
+#line 52 "def.yy" /* yacc.c:355  */
 
 char *text;
 int	ival;
 double  dval;
 
-#line 162 "def.tab.cc" /* yacc.c:355  */
+#line 184 "def.tab.cc" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -175,7 +197,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 179 "def.tab.cc" /* yacc.c:358  */
+#line 201 "def.tab.cc" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -474,9 +496,9 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    48,    48,    49,    50,    53,    66,    79,    96,    99,
-     112,   125,   128,   137,   145,   153,   156,   159,   160,   161,
-     162,   163,   164
+       0,    70,    70,    71,    72,    75,   111,   124,   138,   141,
+     154,   167,   170,   179,   187,   202,   205,   208,   209,   210,
+     211,   212,   213
 };
 #endif
 
@@ -1267,23 +1289,46 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 48 "def.yy" /* yacc.c:1646  */
-    {writeLexValue("\n"); writer << endl;}
-#line 1273 "def.tab.cc" /* yacc.c:1646  */
+#line 70 "def.yy" /* yacc.c:1646  */
+    {writeLexValue("\n"); outTriples << endl;}
+#line 1295 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 50 "def.yy" /* yacc.c:1646  */
-    {writeLexValue("\n"); writer << endl;}
-#line 1279 "def.tab.cc" /* yacc.c:1646  */
+#line 72 "def.yy" /* yacc.c:1646  */
+    {writeLexValue("\n"); outTriples << endl;}
+#line 1301 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 53 "def.yy" /* yacc.c:1646  */
+#line 75 "def.yy" /* yacc.c:1646  */
     {
                                     printf("wyrazenie z + \n"); 
                                     writeLexValue("+"); 
-                                    string x,y; 
+                                    
+                                    cout << "Stack size :" << s->size() << endl;
+                                    
+                                    element e1 = s->top();
+                                    s->pop();
+                                    
+                                    element e2 = s->top();
+                                    s->pop(); 
+
+                                    element e;
+                                    e.type = id;
+                                    
+                                    
+                                    stringstream ss;
+                                    ss << "_tmp" << tempVariableCount;
+                                    e.varName = ss.str();
+                                    tempVariableCount++;
+                                    
+                                    outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " +" << endl;
+                                    
+                                    s->push(e);
+                                    
+                                    
+/*                                    string x,y; 
                                     x = s->top(); 
                                     s->pop();
                                     y = s->top();
@@ -1291,62 +1336,17 @@ yyreduce:
                                     std::cout << std::endl << "x: " << x << std::endl;
                                     std::cout << std::endl << "y: " << y << std::endl;
                                     s->push("result");
-                                    writer << "result = " << y << " " << x << " +" << std::endl;
+                                    writer << "result = " << y << " " << x << " +" << std::endl;*/
                                 }
-#line 1297 "def.tab.cc" /* yacc.c:1646  */
-    break;
-
-  case 6:
-#line 66 "def.yy" /* yacc.c:1646  */
-    {
-                                    printf("wyrazenie z - \n"); 
-                                    writeLexValue("-");
-                                    string x,y; 
-                                    x = s->top(); 
-                                    s->pop();
-                                    y = s->top();
-                                    s->pop();
-                                    std::cout << std::endl << "x: " << x << std::endl;
-                                    std::cout << std::endl << "y: " << y << std::endl;
-                                    s->push("result");
-                                    writer << "result = " << y << " " << x << " -" << std::endl;
-                                }
-#line 1315 "def.tab.cc" /* yacc.c:1646  */
-    break;
-
-  case 7:
-#line 79 "def.yy" /* yacc.c:1646  */
-    {
-                                    printf("wyrazenie z = \n"); 
-                                    writeLexValue("=");
-                                    string x,y; 
-                                    x = s->top(); 
-                                    s->pop();
-                                    y = s->top();
-                                    s->pop();
-                                    std::cout << std::endl << "x: " << x << std::endl;
-                                    std::cout << std::endl << "y: " << y << std::endl;
-                                    s->push("result");
-                                    writer << "result = " << y << " " << x << " =" << std::endl;
-                                    //DODAWANIE DO TABLICY SYMBOLI TUTAJ
-                                    cout << "PAIR: " << x << " " << y << endl;
-                                    /*symbols.insert ( std::pair<string,int>(x,y) */
-                                }
-#line 1336 "def.tab.cc" /* yacc.c:1646  */
-    break;
-
-  case 8:
-#line 96 "def.yy" /* yacc.c:1646  */
-    {printf("wyrazenie pojedyncze \n");}
 #line 1342 "def.tab.cc" /* yacc.c:1646  */
     break;
 
-  case 9:
-#line 99 "def.yy" /* yacc.c:1646  */
+  case 6:
+#line 111 "def.yy" /* yacc.c:1646  */
     {
-                                    printf("skladnik z * \n"); 
-                                    writeLexValue("*");
-                                    string x,y; 
+                                    printf("wyrazenie z - \n"); 
+                                    writeLexValue("-");
+/*                                    string x,y; 
                                     x = s->top(); 
                                     s->pop();
                                     y = s->top();
@@ -1354,125 +1354,174 @@ yyreduce:
                                     std::cout << std::endl << "x: " << x << std::endl;
                                     std::cout << std::endl << "y: " << y << std::endl;
                                     s->push("result");
-                                    writer << "result = " << y << " " << x << " *" << std::endl;
+                                    writer << "result = " << y << " " << x << " -" << std::endl;*/
                                 }
 #line 1360 "def.tab.cc" /* yacc.c:1646  */
     break;
 
-  case 10:
-#line 112 "def.yy" /* yacc.c:1646  */
+  case 7:
+#line 124 "def.yy" /* yacc.c:1646  */
     {
-                                    printf("skladnik z / \n");
-                                    writeLexValue("/");
-                                    string x,y; 
+                                    printf("wyrazenie z = \n"); 
+                                    writeLexValue("=");
+/*                                    string x,y; 
                                     x = s->top(); 
-                                    s->pop();
-                                    y = s->top();
-                                    s->pop();
-                                    std::cout << std::endl << "x: " << x << std::endl;
-                                    std::cout << std::endl << "y: " << y << std::endl;
-                                    s->push("result");
-                                    writer << "result = " << y << " " << x << " /" << std::endl;
+                                    s->pop();*/
+/*                                     std::cout << std::endl << "x: " << x << std::endl; */
+                                    //DODAWANIE DO TABLICY SYMBOLI TUTAJ
+                                    
+                                    
+                                    
+/*                                    symbols.insert ( std::pair<int,element>(x,y) */
                                 }
 #line 1378 "def.tab.cc" /* yacc.c:1646  */
     break;
 
-  case 11:
-#line 125 "def.yy" /* yacc.c:1646  */
-    {printf("skladnik pojedynczy \n");}
+  case 8:
+#line 138 "def.yy" /* yacc.c:1646  */
+    {printf("wyrazenie pojedyncze \n");}
 #line 1384 "def.tab.cc" /* yacc.c:1646  */
     break;
 
+  case 9:
+#line 141 "def.yy" /* yacc.c:1646  */
+    {
+                                    printf("skladnik z * \n"); 
+                                    writeLexValue("*");
+/*                                    string x,y; 
+                                    x = s->top(); 
+                                    s->pop();
+                                    y = s->top();
+                                    s->pop();*/
+/*                                     std::cout << std::endl << "x: " << x << std::endl; */
+/*                                     std::cout << std::endl << "y: " << y << std::endl; */
+/*                                    s->push("result");
+                                    writer << "result = " << y << " " << x << " *" << std::endl;*/
+                                }
+#line 1402 "def.tab.cc" /* yacc.c:1646  */
+    break;
+
+  case 10:
+#line 154 "def.yy" /* yacc.c:1646  */
+    {
+                                    printf("skladnik z / \n");
+                                    writeLexValue("/");
+/*                                    string x,y; 
+                                    x = s->top(); 
+                                    s->pop();
+                                    y = s->top();
+                                    s->pop();*/
+/*                                     std::cout << std::endl << "x: " << x << std::endl; */
+/*                                     std::cout << std::endl << "y: " << y << std::endl; */
+/*                                    s->push("result");
+                                    writer << "result = " << y << " " << x << " /" << std::endl;*/
+                                }
+#line 1420 "def.tab.cc" /* yacc.c:1646  */
+    break;
+
+  case 11:
+#line 167 "def.yy" /* yacc.c:1646  */
+    {printf("skladnik pojedynczy \n");}
+#line 1426 "def.tab.cc" /* yacc.c:1646  */
+    break;
+
   case 12:
-#line 128 "def.yy" /* yacc.c:1646  */
+#line 170 "def.yy" /* yacc.c:1646  */
     {
                                     printf("czynnik znakowy (zmienna) - %s\n",(yyvsp[0].text)); 
                                     fprintf(yyout, "%s ", (yyvsp[0].text));
                                     printf("\n>>PUSHING AT STACK<<\n");
-                                    std::stringstream ss;
-                                    ss << (yyvsp[0].text);
-                                    s->push(ss.str());
+/*                                    std::stringstream ss;
+                                    ss << $1;
+                                    s->push(ss.str());*/
                                     
                                 }
-#line 1398 "def.tab.cc" /* yacc.c:1646  */
+#line 1440 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 137 "def.yy" /* yacc.c:1646  */
+#line 179 "def.yy" /* yacc.c:1646  */
     {
                                     printf("czynnik liczba zmiennoprzecinkowa %lf\n",(yyvsp[0].dval)); 
                                     fprintf(yyout, "%lf ", (yyvsp[0].dval));
                                     printf("\n>>PUSHING AT STACK<<\n");
-                                    std::stringstream ss;
-                                    ss << (yyvsp[0].dval);
-                                    s->push(ss.str());
+/*                                    std::stringstream ss;
+                                    ss << $1;
+                                    s->push(ss.str());*/
                                 }
-#line 1411 "def.tab.cc" /* yacc.c:1646  */
+#line 1453 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 145 "def.yy" /* yacc.c:1646  */
+#line 187 "def.yy" /* yacc.c:1646  */
     {
                                     printf("czynnik liczba całkowita - %d\n",(yyvsp[0].ival)); 
                                     fprintf(yyout, "%d ", (yyvsp[0].ival)); 
                                     printf("\n>>PUSHING AT STACK<<\n");
-                                    std::stringstream ss;
+                                    
+                                    element e;
+                                    e.type = lc;
+                                    e.val.intVal = (yyvsp[0].ival);
+                                    
+                                    stringstream ss;
                                     ss << (yyvsp[0].ival);
-                                    s->push(ss.str());
+                                    e.varName = ss.str();
+
+                                    s->push(e);
                                 }
-#line 1424 "def.tab.cc" /* yacc.c:1646  */
+#line 1473 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 153 "def.yy" /* yacc.c:1646  */
+#line 202 "def.yy" /* yacc.c:1646  */
     {printf("wyrazenie w nawiasach\n");}
-#line 1430 "def.tab.cc" /* yacc.c:1646  */
+#line 1479 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 156 "def.yy" /* yacc.c:1646  */
+#line 205 "def.yy" /* yacc.c:1646  */
     {printf("wyrazenie warunkowe\n");}
-#line 1436 "def.tab.cc" /* yacc.c:1646  */
+#line 1485 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 159 "def.yy" /* yacc.c:1646  */
+#line 208 "def.yy" /* yacc.c:1646  */
     {printf("operator mniejszosci - <\n");}
-#line 1442 "def.tab.cc" /* yacc.c:1646  */
+#line 1491 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 160 "def.yy" /* yacc.c:1646  */
+#line 209 "def.yy" /* yacc.c:1646  */
     {printf("operator wiekszosci - >\n");}
-#line 1448 "def.tab.cc" /* yacc.c:1646  */
+#line 1497 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 161 "def.yy" /* yacc.c:1646  */
+#line 210 "def.yy" /* yacc.c:1646  */
     {printf("operator rownosci - ==\n");}
-#line 1454 "def.tab.cc" /* yacc.c:1646  */
+#line 1503 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 162 "def.yy" /* yacc.c:1646  */
+#line 211 "def.yy" /* yacc.c:1646  */
     {printf("operator nierownosci !=\n");}
-#line 1460 "def.tab.cc" /* yacc.c:1646  */
+#line 1509 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 163 "def.yy" /* yacc.c:1646  */
+#line 212 "def.yy" /* yacc.c:1646  */
     {printf("operator wiekszosci lub rownosci - >=\n");}
-#line 1466 "def.tab.cc" /* yacc.c:1646  */
+#line 1515 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 164 "def.yy" /* yacc.c:1646  */
+#line 213 "def.yy" /* yacc.c:1646  */
     {printf("operator mniejszosci lub rownosci - <=\n");}
-#line 1472 "def.tab.cc" /* yacc.c:1646  */
+#line 1521 "def.tab.cc" /* yacc.c:1646  */
     break;
 
 
-#line 1476 "def.tab.cc" /* yacc.c:1646  */
+#line 1525 "def.tab.cc" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1700,7 +1749,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 166 "def.yy" /* yacc.c:1906  */
+#line 215 "def.yy" /* yacc.c:1906  */
 
 
 //1. main, zeby dzialalo z konsoli ./leks in.txt, a nie jako ./leks < in.txt
@@ -1710,8 +1759,9 @@ yyreturn:
 
 
 
-void writeLexValue(char *value)
+void writeLexValue(char * value)
 {
+/*         outLexValue << x << " "; */
 	fprintf(yyout, "%s ", value);
 }
 

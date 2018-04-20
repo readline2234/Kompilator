@@ -1,14 +1,2 @@
-result = 3 8 *
-result = 5 result -
-result = 4 13 /
-result = result result +
-
-result = 7.13 5 +
-
-result = A 13 +
-result = 1.23 B *
-result = result C /
-result = result result +
-
-result = a 3 =
+result = a 5 =
 
