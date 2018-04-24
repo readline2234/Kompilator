@@ -1,6 +1,2 @@
-_tmp0 = 3 x =
-
-_tmp1 = 2 x *
-_tmp2 = _tmp1 5 +
-_tmp3 = _tmp2 z =
+_tmp0 = 1 x +
 

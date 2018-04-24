@@ -9,6 +9,7 @@
 #include <stack>
 #include <fstream>
 #include <map>
+#include <vector>
 
 #define INFILE_ERROR 1
 #define OUTFILE_ERROR 2
@@ -46,6 +47,10 @@ map <int, element> symbols;
 fstream outTriples("outTriples.txt",std::ios::out);
 fstream outLexValue("outLexValue.txt",std::ios::out);
 fstream outSymbols("outSymbols.txt",std::ios::out);
+fstream outAsm("outAsm.txt",std::ios::out);
+
+vector <string> * codeAsm = new vector <string>();
+void generateAsmAdd(string variable1, string variable2);
 
 int tempVariableCount = 0;
 %}
@@ -100,6 +105,8 @@ wyr
                                     outSymbols << e.varName << "\t" << e.type << endl;
                                     
                                     s->push(e);
+                                    
+                                    generateAsmAdd(e1.varName,e2.varName);
                                 }
 	|wyr '-' skladnik	{
                                     printf("wyrazenie z - \n"); 
@@ -289,6 +296,33 @@ opw
 //2.cd.zeby w plku dla 2+x+7.14+y bylo >>>> 2x+7.14+y+
 //3. testowanie
 
+void generateAsm()
+{
+    for(int i = 0; i < codeAsm->size(); i++)
+    {
+        outAsm << codeAsm->back();
+        codeAsm->pop_back();
+    }
+}
+
+void generateAsmAdd(string variable1, string variable2)
+{
+    stringstream ss;
+    
+    ss << "li $t0, " << variable1 << "\n";
+    codeAsm->push_back(ss.str());
+    ss.clear();
+    
+    ss << "li $t1, " << variable2 << "\n";
+    codeAsm->push_back(ss.str());
+    ss.clear();
+    
+    codeAsm->push_back("add $t0, $t0, $t1");
+ 
+     ss << "sw $t0, " << variable1 << "\n";
+    codeAsm->push_back(ss.str());
+    ss.clear();
+}
 
 
 void writeLexValue(char * value)
@@ -318,7 +352,9 @@ int main(int argc, char *argv[])
 		}
 	}
         
-	yyparse(); 
+	yyparse();
+	
+	generateAsm();
 	
 	return 0;
 }
