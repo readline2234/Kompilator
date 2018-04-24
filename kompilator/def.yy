@@ -45,6 +45,7 @@ map <int, element> symbols;
 
 fstream outTriples("outTriples.txt",std::ios::out);
 fstream outLexValue("outLexValue.txt",std::ios::out);
+fstream outSymbols("outSymbols.txt",std::ios::out);
 
 int tempVariableCount = 0;
 %}
@@ -95,6 +96,9 @@ wyr
                                     
                                     outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " +" << endl;
                                     
+                                    symbols.insert(std::pair<int,element>(0,e));
+                                    outSymbols << e.varName << "\t" << e.type << endl;
+                                    
                                     s->push(e);
                                 }
 	|wyr '-' skladnik	{
@@ -119,6 +123,9 @@ wyr
                                     tempVariableCount++;
                                     
                                     outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " -" << endl;
+                                    
+                                    symbols.insert(std::pair<int,element>(0,e));
+                                    outSymbols << e.varName << "\t" << e.type << endl;
                                     
                                     s->push(e);
                                 }
@@ -146,10 +153,9 @@ wyr
                                     
                                     outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " =" << endl;
                                     
-                                    
                                     //DODAWANIE DO TABLICY SYMBOLI TUTAJ
-                                    
-/*                                    symbols.insert ( std::pair<int,element>(x,y) */
+                                    symbols.insert(std::pair<int,element>(0,e));
+                                    outSymbols << e.varName << "\t" << e.type << endl;
                                 }
                                 
 	|skladnik		{printf("wyrazenie pojedyncze \n");}
@@ -178,6 +184,9 @@ skladnik
                                     
                                     outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " *" << endl;
                                     
+                                    symbols.insert(std::pair<int,element>(0,e));
+                                    outSymbols << e.varName << "\t" << e.type << endl;
+                                    
                                     s->push(e);
 
                                 }
@@ -203,6 +212,9 @@ skladnik
                                     tempVariableCount++;
                                     
                                     outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " /" << endl;
+
+                                    symbols.insert(std::pair<int,element>(0,e));
+                                    outSymbols << e.varName << "\t" << e.type << endl;
                                     
                                     s->push(e);
                               
@@ -224,6 +236,15 @@ czynnik
                                     e.varName = ss.str();
 
                                     s->push(e);
+                                    
+                                    
+                                    //sprawdź czy symbol istneje
+                                    
+/*                                     if() */
+                                    {
+                                        symbols.insert(std::pair<int,element>(0,e));
+                                        outSymbols << e.varName << "\t" << e.type << endl;
+                                    }   
                                 } 
         |LZ                     {
                                     printf("czynnik liczba zmiennoprzecinkowa %lf\n",$1); 

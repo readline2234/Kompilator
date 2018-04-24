@@ -1,8 +1,6 @@
-_tmp0 = 3 C *
-_tmp1 = _tmp0 b +
-_tmp2 = 8 15 /
-_tmp3 = _tmp2 _tmp1 +
-_tmp4 = D 4 *
-_tmp5 = _tmp4 _tmp3 +
-_tmp6 = _tmp5 a =
+_tmp0 = 3 x =
+
+_tmp1 = 2 x *
+_tmp2 = _tmp1 5 +
+_tmp3 = _tmp2 z =
 
