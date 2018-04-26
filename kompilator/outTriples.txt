@@ -1,2 +1,4 @@
 _tmp0 = 1 x +
+_tmp1 = 2 _tmp0 +
+_tmp2 = 3 _tmp1 +
 

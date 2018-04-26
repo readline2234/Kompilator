@@ -1,4 +1,15 @@
 li $t0, 1
 li $t1, x
-sw $t0, 1
 add $t0, $t0, $t1
+sw $t0, _tmp0
+
+li $t0, 2
+li $t1, _tmp0
+add $t0, $t0, $t1
+sw $t0, _tmp1
+
+li $t0, 3
+li $t1, _tmp1
+add $t0, $t0, $t1
+sw $t0, _tmp2
+

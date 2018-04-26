@@ -115,7 +115,7 @@ fstream outSymbols("outSymbols.txt",std::ios::out);
 fstream outAsm("outAsm.txt",std::ios::out);
 
 vector <string> * codeAsm = new vector <string>();
-void generateAsmAdd(string variable1, string variable2);
+void generateAsmAdd(string variable1, string variable2, string result);
 
 int tempVariableCount = 0;
 
@@ -1336,7 +1336,7 @@ yyreduce:
                                     
                                     s->push(e);
                                     
-                                    generateAsmAdd(e1.varName,e2.varName);
+                                    generateAsmAdd(e1.varName,e2.varName,e.varName);
                                 }
 #line 1342 "def.tab.cc" /* yacc.c:1646  */
     break;
@@ -1836,30 +1836,42 @@ yyreturn:
 
 void generateAsm()
 {
-    for(int i = 0; i < codeAsm->size(); i++)
+    cout << "VECTOR SIZE: " << codeAsm->size() << endl;
+    int size = codeAsm->size();
+    for(int i = 0; i < size; i++)
     {
-        outAsm << codeAsm->back();
-        codeAsm->pop_back();
+        cout << "codeAsm[" << i << "]" << codeAsm->at(i) << endl;
+        outAsm << codeAsm->at(i);
+/*         codeAsm->pop_back(); */
     }
 }
 
-void generateAsmAdd(string variable1, string variable2)
+void generateAsmAdd(string variable1, string variable2, string result)
 {
+    cout << ">>>>>>> GENEROWANIE ASM <<<<<<<<<<<<" << endl;
     stringstream ss;
     
     ss << "li $t0, " << variable1 << "\n";
     codeAsm->push_back(ss.str());
-    ss.clear();
+    cout << "SS1: " << ss.str() << endl; 
+    ss.str("");
     
     ss << "li $t1, " << variable2 << "\n";
     codeAsm->push_back(ss.str());
-    ss.clear();
+    cout << "SS2: " << ss.str() << endl;
+    ss.str("");
     
-    codeAsm->push_back("add $t0, $t0, $t1");
- 
-     ss << "sw $t0, " << variable1 << "\n";
+    ss << "add $t0, $t0, $t1" << "\n";
     codeAsm->push_back(ss.str());
-    ss.clear();
+    cout << "SS3: " << ss.str() << endl;
+    ss.str("");
+ 
+    ss << "sw $t0, " << result << "\n\n";
+    codeAsm->push_back(ss.str());
+    cout << "SS4: " << ss.str() << endl;
+    ss.str("");
+    
+    cout << "VECTOR SIZE: " << codeAsm->size() << endl;
 }
 
 
