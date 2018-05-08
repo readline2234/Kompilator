@@ -52,12 +52,14 @@ fstream outTriples("outTriples.txt",std::ios::out);
 fstream outLexValue("outLexValue.txt",std::ios::out);
 fstream outSymbols("outSymbols.txt",std::ios::out);
 fstream outAsm("outAsm.txt",std::ios::out);
-fstream outAll("outAll.txt",std::ios::out);
+fstream outAll("outAll.asm",std::ios::out);
 
 vector <string> * codeAsm = new vector <string>();
 void generateAsmAdd(string variable1, string variable2, string result);
 void generateAsmDef(string variable1, string variable2);
 void generateAsmMul(string variable1, string variable2, string result);
+
+bool isInSymbols(string name);
 
 int tempVariableCount = 0;
 int tempIDcount = 0;
@@ -174,6 +176,8 @@ wyr
                                     
                                     //DODAWANIE DO TABLICY SYMBOLI TUTAJ
 /*                                     symbols.insert(std::pair<int,element>(tempIDcount,e)); */
+                                    cout << ">>>>>>>>>" << isInSymbols(e.varName) << endl;
+
                                     symbols[tempIDcount] = e;
                                     tempIDcount++;
                                     outSymbols << e.varName << "\t" << e.type << endl;
@@ -272,10 +276,19 @@ czynnik
 /*                                     if() */
                                     
 /*                                         symbols.insert(std::pair<int,element>(tempIDcount,e)); */
-                                        symbols[tempIDcount] = e;
-/*                                         tempIDcount++; */
-                                        tempIDcount++;
-                                        outSymbols << e.varName << "\t" << e.type << endl;
+                                        cout << ">>>>>>>>>ID" << isInSymbols(e.varName) << endl;
+                                        
+if(isInSymbols(e.varName))
+                                        {
+                                            cout << "Symbol <" << e.varName << "> juz znajduje sie w tablicy symboli.";
+                                        }
+                                        else
+                                        {
+                                            symbols[tempIDcount] = e;
+                                            tempIDcount++;
+                                            outSymbols << e.varName << "\t" << e.type << endl;
+                                        }
+
                                        
                                 } 
         |LZ                     {
@@ -327,7 +340,7 @@ void generateAll()
     }*/
     
     for (auto& t : symbols)
-        outAll << "\t" << t.second.varName << " " << t.second.type << "\n";
+        outAll << "\t" << t.second.varName << ": \t" << ".word\t0" << "\n";
     
     outAll << ".text" << "\n";
     
@@ -353,7 +366,7 @@ void generateAsmAdd(string variable1, string variable2, string result)
     codeAsm->push_back(ss.str());
     ss.str("");
     
-    ss << "li $t1, " << variable1 << "\n";
+    ss << "lw $t1, " << variable1 << "\n";
     codeAsm->push_back(ss.str());
     ss.str("");
     
@@ -370,7 +383,7 @@ void generateAsmDef(string variable1, string variable2)
 {
     stringstream ss;
     
-    ss << "lw $t0, " << variable1 << "\n";
+    ss << "li $t0, " << variable1 << "\n";
     codeAsm->push_back(ss.str());
     ss.str("");
  
@@ -383,7 +396,7 @@ void generateAsmMul(string variable1, string variable2, string result)
 {
     stringstream ss;
     
-    ss << "li $t0, " << variable2 << "\n";
+    ss << "lw $t0, " << variable2 << "\n";
     codeAsm->push_back(ss.str());
     ss.str("");
     
