@@ -60,6 +60,7 @@ void generateAsmDef(string variable1, string variable2);
 void generateAsmMul(string variable1, string variable2, string result);
 
 int tempVariableCount = 0;
+int tempIDcount = 0;
 %}
 %union 
 {
@@ -108,7 +109,9 @@ wyr
                                     
                                     outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " +" << endl;
                                     
-                                    symbols.insert(std::pair<int,element>(0,e));
+/*                                     symbols.insert(std::pair<int,element>(0,e)); */
+                                    symbols[tempIDcount] = e;
+                                    tempIDcount++;
                                     outSymbols << e.varName << "\t" << e.type << endl;
                                     
                                     s->push(e);
@@ -138,7 +141,9 @@ wyr
                                     
                                     outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " -" << endl;
                                     
-                                    symbols.insert(std::pair<int,element>(0,e));
+/*                                     symbols.insert(std::pair<int,element>(0,e)); */
+                                    symbols[tempIDcount] = e;
+                                    tempIDcount++;
                                     outSymbols << e.varName << "\t" << e.type << endl;
                                     
                                     s->push(e);
@@ -168,7 +173,9 @@ wyr
                                     outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " =" << endl;
                                     
                                     //DODAWANIE DO TABLICY SYMBOLI TUTAJ
-                                    symbols.insert(std::pair<int,element>(0,e));
+/*                                     symbols.insert(std::pair<int,element>(tempIDcount,e)); */
+                                    symbols[tempIDcount] = e;
+                                    tempIDcount++;
                                     outSymbols << e.varName << "\t" << e.type << endl;
                                     
                                     generateAsmDef(e1.varName, e2.varName);
@@ -200,7 +207,9 @@ skladnik
                                     
                                     outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " *" << endl;
                                     
-                                    symbols.insert(std::pair<int,element>(0,e));
+/*                                     symbols.insert(std::pair<int,element>(0,e)); */
+                                    symbols[tempIDcount] = e;
+                                    tempIDcount++;
                                     outSymbols << e.varName << "\t" << e.type << endl;
                                     
                                     s->push(e);
@@ -231,7 +240,9 @@ skladnik
                                     
                                     outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " /" << endl;
 
-                                    symbols.insert(std::pair<int,element>(0,e));
+/*                                     symbols.insert(std::pair<int,element>(tempIDcount,e));  //albo ten sam KLUCZ  do mapy i nie mozna //albo wywolywanie tylko jeden raz */
+                                    symbols[tempIDcount] = e;
+                                    tempIDcount++;
                                     outSymbols << e.varName << "\t" << e.type << endl;
                                     
                                     s->push(e);
@@ -259,10 +270,13 @@ czynnik
                                     //sprawdź czy symbol istneje
                                     
 /*                                     if() */
-                                    {
-                                        symbols.insert(std::pair<int,element>(0,e));
+                                    
+/*                                         symbols.insert(std::pair<int,element>(tempIDcount,e)); */
+                                        symbols[tempIDcount] = e;
+/*                                         tempIDcount++; */
+                                        tempIDcount++;
                                         outSymbols << e.varName << "\t" << e.type << endl;
-                                    }   
+                                       
                                 } 
         |LZ                     {
                                     printf("czynnik liczba zmiennoprzecinkowa %lf\n",$1); 
@@ -305,14 +319,15 @@ opw
 void generateAll()
 {
     stringstream ss;
-    
     outAll << ".data" << "\n";
     
-    for(int i = 0; i < symbols.size(); i++)
+/*    for(int i = 0; i < symbols.size(); i++)
     {
-        outAll << "\n";
-/*      outAll << "\t" << symbols.at(i); */
-    }
+        outAll << "\t" << symbols[i] << "" << "\n";
+    }*/
+    
+    for (auto& t : symbols)
+        outAll << "\t" << t.second.varName << " " << t.second.type << "\n";
     
     outAll << ".text" << "\n";
     
@@ -385,6 +400,17 @@ void generateAsmMul(string variable1, string variable2, string result)
     ss.str("");
 }
 
+bool isInSymbols(string name)
+{
+    for (auto& t : symbols)
+    {
+        if(t.second.varName == name)
+        {
+            return true;    
+        }
+    }
+    return false;
+}
 
 void writeLexValue(char * value)
 {

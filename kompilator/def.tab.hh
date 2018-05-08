@@ -71,7 +71,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 65 "def.yy" /* yacc.c:1909  */
+#line 66 "def.yy" /* yacc.c:1909  */
 
 char *text;
 int	ival;
