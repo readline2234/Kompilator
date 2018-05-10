@@ -58,7 +58,8 @@ vector <string> * codeAsm = new vector <string>();
 void generateAsmAdd(string variable1, string variable2, string result);
 void generateAsmDef(element variable1, string variable2);
 void generateAsmMul(string variable1, string variable2, string result);
-void generateAsmX(string variable1, string variable2, string result, string operation);
+void generateAsmX(element variable1, element variable2, string result, string operation);
+void generateAsmPrint(element variable1);
 
 bool isInSymbols(string name);
 
@@ -120,7 +121,7 @@ wyr
                                     s->push(e);
                                     
 /*                                     generateAsmAdd(e1.varName,e2.varName,e.varName); */
-                                    generateAsmX(e1.varName,e2.varName,e.varName,"add");
+                                    generateAsmX(e1, e2, e.varName,"add");
                                     
                                 }
 	|wyr '-' skladnik	{
@@ -153,9 +154,14 @@ wyr
                                     
                                     s->push(e);
                                     
-                                    generateAsmX(e1.varName,e2.varName,e.varName,"sub");
-                                }
-        |wyr '=' wyr       {
+                                    generateAsmX(e1 ,e2, e.varName,"sub");
+                                }  
+       |PISZ wyr            {
+                                element e1 = s->top();
+                                s->pop();
+                                generateAsmPrint(e1);
+                            }
+       |wyr '=' wyr       {
                                     printf("wyrazenie z = \n"); 
                                     writeLexValue("=");
                                     
@@ -224,7 +230,7 @@ skladnik
                                     s->push(e);
                                     
 /*                                     generateAsmMul(e1.varName, e2.varName, e.varName); */
-                                    generateAsmX(e1.varName, e2.varName, e.varName, "mul");
+                                    generateAsmX(e1, e2, e.varName, "mul");
 
                                 }
 	|skladnik '/' czynnik	{
@@ -364,27 +370,6 @@ void generateAsm()
     }
 }
 
-void generateAsmAdd(string variable1, string variable2, string result)
-{
-    stringstream ss;
-    
-    ss << "li $t0, " << variable2 << "\n";
-    codeAsm->push_back(ss.str());
-    ss.str("");
-    
-    ss << "lw $t1, " << variable1 << "\n";
-    codeAsm->push_back(ss.str());
-    ss.str("");
-    
-    ss << "add $t0, $t0, $t1" << "\n";
-    codeAsm->push_back(ss.str());
-    ss.str("");
- 
-    ss << "sw $t0, " << result << "\n\n";
-    codeAsm->push_back(ss.str());
-    ss.str("");
-}
-
 void generateAsmDef(element variable1, string variable2)
 {
     //tutaj rozroznic czy x = 5 czy x = y
@@ -392,11 +377,11 @@ void generateAsmDef(element variable1, string variable2)
     
     if(variable1.type == types::lc)
     {
-        ss << "li $t0, " << variable1.varName << "\t#type: \t" << (int)variable1.type << "\n";
+        ss << "li $t0, " << variable1.varName << "\t#type: \t" << (int)variable1.type << "\tdef to value\n";
     }
     if(variable1.type == types::id)
     {
-        ss << "lw $t0, " << variable1.varName << "\t#type: \t" << (int)variable1.type << "\n";
+        ss << "lw $t0, " << variable1.varName << "\t#type: \t" << (int)variable1.type << "\tdef to variable\n";
     }
     
     codeAsm->push_back(ss.str());
@@ -407,36 +392,23 @@ void generateAsmDef(element variable1, string variable2)
     ss.str("");
 }
 
-void generateAsmMul(string variable1, string variable2, string result)
+void generateAsmX(element variable1, element variable2, string result, string operation)
 {
     stringstream ss;
+    if(variable2.type == types::lc)
+    {
+        ss << "li $t0, " << variable2.varName << "\t#type: \t" << (int)variable2.type << "\t" << operation << " to value\n";
+    }
+    if(variable2.type == types::id)
+    {
+        ss << "lw $t0, " << variable2.varName << "\t#type: \t" << (int)variable2.type << "\t" << operation << " to variable\n";
+    }
     
-    ss << "lw $t0, " << variable2 << "\n";
+/*    ss << "lw $t0, " << variable2 << "\n";
     codeAsm->push_back(ss.str());
-    ss.str("");
+    ss.str("");*/
     
-    ss << "li $t1, " << variable1 << "\n";
-    codeAsm->push_back(ss.str());
-    ss.str("");
-    
-    ss << "mul $t0, $t0, $t1" << "\n";
-    codeAsm->push_back(ss.str());
-    ss.str("");
- 
-    ss << "sw $t0, " << result << "\n\n";
-    codeAsm->push_back(ss.str());
-    ss.str("");
-}
-
-void generateAsmX(string variable1, string variable2, string result, string operation)
-{
-    stringstream ss;
-    
-    ss << "lw $t0, " << variable2 << "\n";
-    codeAsm->push_back(ss.str());
-    ss.str("");
-    
-    ss << "li $t1, " << variable1 << "\n";
+    ss << "\tli $t1, " << variable1.varName << "\n";
     codeAsm->push_back(ss.str());
     ss.str("");
     
@@ -445,6 +417,23 @@ void generateAsmX(string variable1, string variable2, string result, string oper
     ss.str("");
  
     ss << "sw $t0, " << result << "\n\n";
+    codeAsm->push_back(ss.str());
+    ss.str("");
+}
+
+void generateAsmPrint(element variable1) 
+{
+    stringstream ss;
+    
+    ss << "li $v0, 1\n";
+    codeAsm->push_back(ss.str());
+    ss.str("");
+    
+    ss << "li $a0, " << variable1.varName << "\n";
+    codeAsm->push_back(ss.str());
+    ss.str("");
+ 
+    ss << "syscall\n\n";
     codeAsm->push_back(ss.str());
     ss.str("");
 }
