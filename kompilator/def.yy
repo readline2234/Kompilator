@@ -56,8 +56,9 @@ fstream outAll("outAll.asm",std::ios::out);
 
 vector <string> * codeAsm = new vector <string>();
 void generateAsmAdd(string variable1, string variable2, string result);
-void generateAsmDef(string variable1, string variable2);
+void generateAsmDef(element variable1, string variable2);
 void generateAsmMul(string variable1, string variable2, string result);
+void generateAsmX(string variable1, string variable2, string result, string operation);
 
 bool isInSymbols(string name);
 
@@ -118,7 +119,9 @@ wyr
                                     
                                     s->push(e);
                                     
-                                    generateAsmAdd(e1.varName,e2.varName,e.varName);
+/*                                     generateAsmAdd(e1.varName,e2.varName,e.varName); */
+                                    generateAsmX(e1.varName,e2.varName,e.varName,"add");
+                                    
                                 }
 	|wyr '-' skladnik	{
                                     printf("wyrazenie z - \n"); 
@@ -149,6 +152,8 @@ wyr
                                     outSymbols << e.varName << "\t" << e.type << endl;
                                     
                                     s->push(e);
+                                    
+                                    generateAsmX(e1.varName,e2.varName,e.varName,"sub");
                                 }
         |wyr '=' wyr       {
                                     printf("wyrazenie z = \n"); 
@@ -182,7 +187,7 @@ wyr
                                     tempIDcount++;
                                     outSymbols << e.varName << "\t" << e.type << endl;
                                     
-                                    generateAsmDef(e1.varName, e2.varName);
+                                    generateAsmDef(e1, e2.varName);
                                 }
                                 
 	|skladnik		{printf("wyrazenie pojedyncze \n");}
@@ -218,7 +223,8 @@ skladnik
                                     
                                     s->push(e);
                                     
-                                    generateAsmMul(e1.varName, e2.varName, e.varName);
+/*                                     generateAsmMul(e1.varName, e2.varName, e.varName); */
+                                    generateAsmX(e1.varName, e2.varName, e.varName, "mul");
 
                                 }
 	|skladnik '/' czynnik	{
@@ -379,11 +385,20 @@ void generateAsmAdd(string variable1, string variable2, string result)
     ss.str("");
 }
 
-void generateAsmDef(string variable1, string variable2)
+void generateAsmDef(element variable1, string variable2)
 {
+    //tutaj rozroznic czy x = 5 czy x = y
     stringstream ss;
     
-    ss << "li $t0, " << variable1 << "\n";
+    if(variable1.type == types::lc)
+    {
+        ss << "li $t0, " << variable1.varName << "\t#type: \t" << (int)variable1.type << "\n";
+    }
+    if(variable1.type == types::id)
+    {
+        ss << "lw $t0, " << variable1.varName << "\t#type: \t" << (int)variable1.type << "\n";
+    }
+    
     codeAsm->push_back(ss.str());
     ss.str("");
  
@@ -405,6 +420,27 @@ void generateAsmMul(string variable1, string variable2, string result)
     ss.str("");
     
     ss << "mul $t0, $t0, $t1" << "\n";
+    codeAsm->push_back(ss.str());
+    ss.str("");
+ 
+    ss << "sw $t0, " << result << "\n\n";
+    codeAsm->push_back(ss.str());
+    ss.str("");
+}
+
+void generateAsmX(string variable1, string variable2, string result, string operation)
+{
+    stringstream ss;
+    
+    ss << "lw $t0, " << variable2 << "\n";
+    codeAsm->push_back(ss.str());
+    ss.str("");
+    
+    ss << "li $t1, " << variable1 << "\n";
+    codeAsm->push_back(ss.str());
+    ss.str("");
+    
+    ss << operation << " $t0, $t0, $t1" << "\n";
     codeAsm->push_back(ss.str());
     ss.str("");
  
