@@ -1952,8 +1952,18 @@ void generateAsmX(element variable1, element variable2, string result, string op
 /*    ss << "lw $t0, " << variable2 << "\n";
     codeAsm->push_back(ss.str());
     ss.str("");*/
+ /*   
+    ss << "\tli $t1, " << variable1.varName << "\n";*/
     
-    ss << "\tli $t1, " << variable1.varName << "\n";
+    if(variable1.type == types::lc)
+    {
+        ss << "\tli $t1, " << variable1.varName << "\t#type: \t" << (int)variable1.type << "\t" << operation << " to value\n";
+    }
+    if(variable1.type == types::id)
+    {
+        ss << "\tlw $t1, " << variable1.varName << "\t#type: \t" << (int)variable1.type << "\t" << operation << " to variable\n";
+    }
+    
     codeAsm->push_back(ss.str());
     ss.str("");
     
