@@ -94,16 +94,27 @@ start
         ;
 if_expr
         :if_begin code_block '}' {cout << "IF" << endl;}
+        |if_begin code_block '}' if_else {cout << "IF-else" << endl;}
         ;
 if_begin
         :JEZELI '(' cond_expr ')' TO '{' {cout << "IF - poczatek" << endl;}
         ;
 cond_expr
         :wyr
+        |wyr cond_operator wyr
         ;
 code_block
         :code_block wyr
         |wyr
+        ;
+if_else
+        :JEZELINIE '{' code_block '}'
+        ;
+cond_operator
+        :LT                     {printf("operator mniejszosci - <\n");} 
+        |GT                     {printf("operator wiekszosci - >\n");} 
+        |EQ                     {printf("operator rownosci - ==\n");} 
+        |NE                     {printf("operator nierownosci !=\n");} 
         ;
         
 wyr
