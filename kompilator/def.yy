@@ -45,6 +45,7 @@ struct element {
 
 stack <element> * s = new stack<element>;
 map <int, element> symbols;
+vector <string> * codeAsm = new vector <string>();
 
 fstream outTriples("outTriples.txt",std::ios::out);
 fstream outLexValue("outLexValue.txt",std::ios::out);
@@ -52,7 +53,12 @@ fstream outSymbols("outSymbols.txt",std::ios::out);
 fstream outAsm("outAsm.txt",std::ios::out);
 fstream outAll("outAll.asm",std::ios::out);
 
-vector <string> * codeAsm = new vector <string>();
+void addFunction();
+void subFunction();
+void mulFunction();
+void writeFunction();
+void readFunction();
+
 void generateAsmAdd(string variable1, string variable2, string result);
 void generateAsmDef(element variable1, string variable2);
 void generateAsmMul(string variable1, string variable2, string result);
@@ -65,12 +71,14 @@ bool isInSymbols(string name);
 int tempVariableCount = 0;
 int tempIDcount = 0;
 %}
+
 %union 
 {
 char *text;
 int	ival;
 double  dval;
 };
+
 %type <text> wyr
 %token CK ZM TK
 %token PISZ CZYTAJ 
@@ -91,11 +99,11 @@ start
         |instructions
         ;
 if_expr
-        :if_begin code_block '}' {cout << "IF" << endl;}
-        |if_begin code_block '}' if_else {cout << "IF-else" << endl;}
+        :if_begin code_block '}'         {outLexValue << "IF" << endl;}
+        |if_begin code_block '}' if_else {outLexValue << "IF-else" << endl;}
         ;
 if_begin
-        :JEZELI '(' cond_expr ')' TO '{' {cout << "IF - poczatek" << endl;}
+        :JEZELI '(' cond_expr ')' TO '{' {outLexValue << "IF - poczatek" << endl;}
         ;
 cond_expr
         :wyr
@@ -109,8 +117,8 @@ if_else
         :JEZELINIE '{' code_block '}'
         ;
 cond_operator
-        :LT                     {printf("operator mniejszosci - <\n");} 
-        |GT                     {printf("operator wiekszosci - >\n");} 
+        :LT                     {} //outLexValue << "operator mniejszosci - <" << endl; } 
+        |GT                     {} //outLexValue << "operator wiekszosci - >" << end;} 
         |EQ                     {printf("operator rownosci - ==\n");} 
         |NE                     {printf("operator nierownosci !=\n");} 
         ;
@@ -122,81 +130,17 @@ instructions
         ;
         
 wyr
-	:wyr '+' skladnik	{  
-                                    printf("wyrazenie z + \n"); 
-                                    writeLexValue("+"); 
-                                    
-                                    cout << "Stack size :" << s->size() << endl;
-                                    
-                                    element e1 = s->top();
-                                    s->pop();
-                                    
-                                    element e2 = s->top();
-                                    s->pop(); 
-
-                                    element e;
-                                    e.type = id;
-                                    
-                                    
-                                    stringstream ss;
-                                    ss << "_tmp" << tempVariableCount;
-                                    e.varName = ss.str();
-                                    tempVariableCount++;
-                                    
-                                    outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " +" << endl;
-                                    
-/*                                     symbols.insert(std::pair<int,element>(0,e)); */
-                                    symbols[tempIDcount] = e;
-                                    tempIDcount++;
-                                    outSymbols << e.varName << "\t" << e.type << endl;
-                                    
-                                    s->push(e);
-                                    
-/*                                     generateAsmAdd(e1.varName,e2.varName,e.varName); */
-                                    generateAsmX(e1, e2, e.varName,"add");
-                                    
+	:wyr '+' skladnik	{
+                                    addFunction();
                                 }
 	|wyr '-' skladnik	{
-                                    printf("wyrazenie z - \n"); 
-                                    writeLexValue("-");
-                                    
-                                    cout << "Stack size :" << s->size() << endl;
-                                    
-                                    element e1 = s->top();
-                                    s->pop();
-                                    
-                                    element e2 = s->top();
-                                    s->pop(); 
-
-                                    element e;
-                                    e.type = id;
-                                    
-                                    
-                                    stringstream ss;
-                                    ss << "_tmp" << tempVariableCount;
-                                    e.varName = ss.str();
-                                    tempVariableCount++;
-                                    
-                                    outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " -" << endl;
-                                    
-/*                                     symbols.insert(std::pair<int,element>(0,e)); */
-                                    symbols[tempIDcount] = e;
-                                    tempIDcount++;
-                                    outSymbols << e.varName << "\t" << e.type << endl;
-                                    
-                                    s->push(e);
-                                    
-                                    generateAsmX(e1 ,e2, e.varName,"sub");
+                                    subFunction();
                                 }  
-       |PISZ wyr            {
-                                element e1 = s->top();
-                                s->pop();
-                                generateAsmPrint(e1);
+        |PISZ wyr            {
+                                    writeFunction();
                             }
         |CZYTAJ wyr         {
-                                element e1 = s->top();
-                                s->pop();
-                                generateAsmRead(e1);
+                                readFunction();
                             }
        |wyr '=' wyr       {
                                     printf("wyrazenie z = \n"); 
@@ -237,38 +181,7 @@ wyr
 	;
 skladnik
 	:skladnik '*' czynnik	{
-                                    printf("skladnik z * \n"); 
-                                    writeLexValue("*");
-                                                                        
-                                    cout << "Stack size :" << s->size() << endl;
-                                    
-                                    element e1 = s->top();
-                                    s->pop();
-                                    
-                                    element e2 = s->top();
-                                    s->pop(); 
-
-                                    element e;
-                                    e.type = id;
-                                    
-                                    
-                                    stringstream ss;
-                                    ss << "_tmp" << tempVariableCount;
-                                    e.varName = ss.str();
-                                    tempVariableCount++;
-                                    
-                                    outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " *" << endl;
-                                    
-/*                                     symbols.insert(std::pair<int,element>(0,e)); */
-                                    symbols[tempIDcount] = e;
-                                    tempIDcount++;
-                                    outSymbols << e.varName << "\t" << e.type << endl;
-                                    
-                                    s->push(e);
-                                    
-/*                                     generateAsmMul(e1.varName, e2.varName, e.varName); */
-                                    generateAsmX(e1, e2, e.varName, "mul");
-
+                                    mulFunction();
                                 }
 	|skladnik '/' czynnik	{
                                     printf("skladnik z / \n");
@@ -391,6 +304,122 @@ opw
         ;
 %%
 
+void addFunction()
+{
+    printf("wyrazenie z + \n"); 
+                                    writeLexValue("+"); 
+                                    
+                                    cout << "Stack size :" << s->size() << endl;
+                                    
+                                    element e1 = s->top();
+                                    s->pop();
+                                    
+                                    element e2 = s->top();
+                                    s->pop(); 
+
+                                    element e;
+                                    e.type = id;
+                                    
+                                    
+                                    stringstream ss;
+                                    ss << "_tmp" << tempVariableCount;
+                                    e.varName = ss.str();
+                                    tempVariableCount++;
+                                    
+                                    outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " +" << endl;
+                                    
+/*                                     symbols.insert(std::pair<int,element>(0,e)); */
+                                    symbols[tempIDcount] = e;
+                                    tempIDcount++;
+                                    outSymbols << e.varName << "\t" << e.type << endl;
+                                    
+                                    s->push(e);
+                                    
+/*                                     generateAsmAdd(e1.varName,e2.varName,e.varName); */
+                                    generateAsmX(e1, e2, e.varName,"add");
+}
+void subFunction()
+{
+     printf("wyrazenie z - \n"); 
+                                    writeLexValue("-");
+                                    
+                                    cout << "Stack size :" << s->size() << endl;
+                                    
+                                    element e1 = s->top();
+                                    s->pop();
+                                    
+                                    element e2 = s->top();
+                                    s->pop(); 
+
+                                    element e;
+                                    e.type = id;
+                                    
+                                    
+                                    stringstream ss;
+                                    ss << "_tmp" << tempVariableCount;
+                                    e.varName = ss.str();
+                                    tempVariableCount++;
+                                    
+                                    outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " -" << endl;
+                                    
+/*                                     symbols.insert(std::pair<int,element>(0,e)); */
+                                    symbols[tempIDcount] = e;
+                                    tempIDcount++;
+                                    outSymbols << e.varName << "\t" << e.type << endl;
+                                    
+                                    s->push(e);
+                                    
+                                    generateAsmX(e1 ,e2, e.varName,"sub");
+}
+void mulFunction()
+{
+                                        printf("skladnik z * \n"); 
+                                    writeLexValue("*");
+                                                                        
+                                    cout << "Stack size :" << s->size() << endl;
+                                    
+                                    element e1 = s->top();
+                                    s->pop();
+                                    
+                                    element e2 = s->top();
+                                    s->pop(); 
+
+                                    element e;
+                                    e.type = id;
+                                    
+                                    
+                                    stringstream ss;
+                                    ss << "_tmp" << tempVariableCount;
+                                    e.varName = ss.str();
+                                    tempVariableCount++;
+                                    
+                                    outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " *" << endl;
+                                    
+/*                                     symbols.insert(std::pair<int,element>(0,e)); */
+                                    symbols[tempIDcount] = e;
+                                    tempIDcount++;
+                                    outSymbols << e.varName << "\t" << e.type << endl;
+                                    
+                                    s->push(e);
+                                    
+/*                                     generateAsmMul(e1.varName, e2.varName, e.varName); */
+                                    generateAsmX(e1, e2, e.varName, "mul");
+
+}
+void writeFunction()
+{
+    element e1 = s->top();
+    s->pop();
+    generateAsmPrint(e1);
+}
+
+void readFunction()
+{
+    element e1 = s->top();
+    s->pop();
+    generateAsmRead(e1);
+}
+
 void generateAll()
 {
     stringstream ss;
@@ -411,7 +440,6 @@ void generateAll()
         outAll << "\t" << codeAsm->at(i);
     }
 }
-
 void generateAsm()
 {
     for(int i = 0; i < codeAsm->size(); i++)
@@ -441,7 +469,6 @@ void generateAsmDef(element variable1, string variable2)
     codeAsm->push_back(ss.str());
     ss.str("");
 }
-
 void generateAsmX(element variable1, element variable2, string result, string operation)
 {
     stringstream ss;
@@ -474,7 +501,6 @@ void generateAsmX(element variable1, element variable2, string result, string op
     codeAsm->push_back(ss.str());
     ss.str("");
 }
-
 void generateAsmPrint(element variable1) 
 {
     stringstream ss;
@@ -496,7 +522,6 @@ void generateAsmPrint(element variable1)
     codeAsm->push_back(ss.str());
     ss.str("");
 }
-
 void generateAsmRead(element variable1)
 {
     stringstream ss;
