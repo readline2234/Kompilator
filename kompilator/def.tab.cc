@@ -101,7 +101,8 @@ union vals {
 enum types{
     lc = 0,
     lz = 1,
-    id = 2
+    id = 2,
+    tk = 3
 };
 
 struct element {
@@ -125,13 +126,14 @@ void generateAsmDef(element variable1, string variable2);
 void generateAsmMul(string variable1, string variable2, string result);
 void generateAsmX(element variable1, element variable2, string result, string operation);
 void generateAsmPrint(element variable1);
+void generateAsmRead(element variable1);
 
 bool isInSymbols(string name);
 
 int tempVariableCount = 0;
 int tempIDcount = 0;
 
-#line 135 "def.tab.cc" /* yacc.c:339  */
+#line 137 "def.tab.cc" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -192,13 +194,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 70 "def.yy" /* yacc.c:355  */
+#line 72 "def.yy" /* yacc.c:355  */
 
 char *text;
 int	ival;
 double  dval;
 
-#line 202 "def.tab.cc" /* yacc.c:355  */
+#line 204 "def.tab.cc" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -215,7 +217,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 219 "def.tab.cc" /* yacc.c:358  */
+#line 221 "def.tab.cc" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -455,7 +457,7 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  13
+#define YYFINAL  16
 /* YYLAST -- Last index in YYTABLE.  */
 #define YYLAST   54
 
@@ -464,9 +466,9 @@ union yyalloc
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  7
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  23
+#define YYNRULES  25
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  34
+#define YYNSTATES  37
 
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
@@ -514,9 +516,9 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    88,    88,    89,    90,    93,   127,   159,   164,   199,
-     202,   236,   268,   271,   306,   314,   329,   332,   335,   336,
-     337,   338,   339,   340
+       0,    90,    90,    91,    92,    95,   129,   161,   166,   171,
+     206,   209,   243,   275,   278,   313,   321,   336,   349,   352,
+     355,   356,   357,   358,   359,   360
 };
 #endif
 
@@ -543,10 +545,10 @@ static const yytype_uint16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF -19
+#define YYPACT_NINF -5
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-19)))
+  (!!((Yystate) == (-5)))
 
 #define YYTABLE_NINF -1
 
@@ -557,10 +559,10 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -5,    -5,   -19,   -19,   -19,    -5,     0,    17,   -12,   -19,
-     -19,   -18,    27,   -19,   -18,   -19,   -19,   -19,   -19,   -19,
-     -19,    25,    25,    -5,    -5,    25,    25,   -19,   -12,   -12,
-     -18,   -18,   -19,   -19
+       5,    -5,     5,     5,    -5,    -5,    -5,     5,     0,    20,
+       6,    -5,    -5,    29,    29,    22,    -5,    29,    -5,    -5,
+      -5,    -5,    -5,    -5,    -4,    -4,     5,     5,    -4,    -4,
+      -5,     6,     6,    29,    29,    -5,    -5
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -568,22 +570,22 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       0,     0,    13,    15,    14,     0,     0,     2,     9,    12,
-       3,     7,     0,     1,     4,    19,    18,    20,    22,    23,
-      21,     0,     0,     0,     0,     0,     0,    16,     5,     6,
-       8,    17,    10,    11
+       0,    17,     0,     0,    14,    16,    15,     0,     0,     2,
+      10,    13,     3,     7,     8,     0,     1,     4,    21,    20,
+      22,    24,    25,    23,     0,     0,     0,     0,     0,     0,
+      18,     5,     6,     9,    19,    11,    12
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -19,   -19,     4,     1,    -9,   -19,   -19
+      -5,    -5,     1,    14,    24,    -5,    -5
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     6,     7,     8,     9,    10,    24
+      -1,     8,     9,    10,    11,    12,    27
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -591,48 +593,48 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-      13,     1,     0,    21,    22,    11,     1,    23,     0,    12,
-      14,    25,    26,     2,     3,     4,    32,    33,     2,     3,
-       4,     5,    28,    29,     0,     0,     5,    30,    31,    15,
-      16,    17,    18,    19,    20,     0,     0,     0,    21,    22,
-       0,     0,    23,     2,     3,     4,     0,     0,    21,    22,
-       0,     5,    23,     0,    27
+      16,     1,     0,    13,    14,     1,     2,     3,    15,    17,
+       1,     2,     3,     0,     4,     5,     6,     0,     4,     5,
+       6,     0,     7,     4,     5,     6,     7,    33,    34,    28,
+      29,     7,    18,    19,    20,    21,    22,    23,    31,    32,
+       0,    24,    25,    24,    25,    26,     0,    26,     0,    30,
+      24,    25,    35,    36,    26
 };
 
 static const yytype_int8 yycheck[] =
 {
-       0,     6,    -1,    21,    22,     1,     6,    25,    -1,     5,
-       6,    23,    24,    18,    19,    20,    25,    26,    18,    19,
-      20,    26,    21,    22,    -1,    -1,    26,    23,    24,    12,
-      13,    14,    15,    16,    17,    -1,    -1,    -1,    21,    22,
-      -1,    -1,    25,    18,    19,    20,    -1,    -1,    21,    22,
-      -1,    26,    25,    -1,    27
+       0,     5,    -1,     2,     3,     5,     6,     7,     7,     8,
+       5,     6,     7,    -1,    18,    19,    20,    -1,    18,    19,
+      20,    -1,    26,    18,    19,    20,    26,    26,    27,    23,
+      24,    26,    12,    13,    14,    15,    16,    17,    24,    25,
+      -1,    21,    22,    21,    22,    25,    -1,    25,    -1,    27,
+      21,    22,    28,    29,    25
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,     6,    18,    19,    20,    26,    29,    30,    31,    32,
-      33,    30,    30,     0,    30,    12,    13,    14,    15,    16,
-      17,    21,    22,    25,    34,    23,    24,    27,    31,    31,
-      30,    30,    32,    32
+       0,     5,     6,     7,    18,    19,    20,    26,    29,    30,
+      31,    32,    33,    30,    30,    30,     0,    30,    12,    13,
+      14,    15,    16,    17,    21,    22,    25,    34,    23,    24,
+      27,    31,    31,    30,    30,    32,    32
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
        0,    28,    29,    29,    29,    30,    30,    30,    30,    30,
-      31,    31,    31,    32,    32,    32,    32,    33,    34,    34,
-      34,    34,    34,    34
+      30,    31,    31,    31,    32,    32,    32,    32,    32,    33,
+      34,    34,    34,    34,    34,    34
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     1,     1,     2,     3,     3,     2,     3,     1,
-       3,     3,     1,     1,     1,     1,     3,     3,     1,     1,
-       1,     1,     1,     1
+       0,     2,     1,     1,     2,     3,     3,     2,     2,     3,
+       1,     3,     3,     1,     1,     1,     1,     1,     3,     3,
+       1,     1,     1,     1,     1,     1
 };
 
 
@@ -1309,19 +1311,19 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 88 "def.yy" /* yacc.c:1646  */
+#line 90 "def.yy" /* yacc.c:1646  */
     {writeLexValue("\n"); outTriples << endl;}
-#line 1315 "def.tab.cc" /* yacc.c:1646  */
+#line 1317 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 90 "def.yy" /* yacc.c:1646  */
+#line 92 "def.yy" /* yacc.c:1646  */
     {writeLexValue("\n"); outTriples << endl;}
-#line 1321 "def.tab.cc" /* yacc.c:1646  */
+#line 1323 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 93 "def.yy" /* yacc.c:1646  */
+#line 95 "def.yy" /* yacc.c:1646  */
     {
                                     printf("wyrazenie z + \n"); 
                                     writeLexValue("+"); 
@@ -1356,11 +1358,11 @@ yyreduce:
                                     generateAsmX(e1, e2, e.varName,"add");
                                     
                                 }
-#line 1360 "def.tab.cc" /* yacc.c:1646  */
+#line 1362 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 127 "def.yy" /* yacc.c:1646  */
+#line 129 "def.yy" /* yacc.c:1646  */
     {
                                     printf("wyrazenie z - \n"); 
                                     writeLexValue("-");
@@ -1393,21 +1395,31 @@ yyreduce:
                                     
                                     generateAsmX(e1 ,e2, e.varName,"sub");
                                 }
-#line 1397 "def.tab.cc" /* yacc.c:1646  */
+#line 1399 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 159 "def.yy" /* yacc.c:1646  */
+#line 161 "def.yy" /* yacc.c:1646  */
     {
                                 element e1 = s->top();
                                 s->pop();
                                 generateAsmPrint(e1);
                             }
-#line 1407 "def.tab.cc" /* yacc.c:1646  */
+#line 1409 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 164 "def.yy" /* yacc.c:1646  */
+#line 166 "def.yy" /* yacc.c:1646  */
+    {
+                                element e1 = s->top();
+                                s->pop();
+                                generateAsmRead(e1);
+                            }
+#line 1419 "def.tab.cc" /* yacc.c:1646  */
+    break;
+
+  case 9:
+#line 171 "def.yy" /* yacc.c:1646  */
     {
                                     printf("wyrazenie z = \n"); 
                                     writeLexValue("=");
@@ -1442,17 +1454,17 @@ yyreduce:
                                     
                                     generateAsmDef(e1, e2.varName);
                                 }
-#line 1446 "def.tab.cc" /* yacc.c:1646  */
-    break;
-
-  case 9:
-#line 199 "def.yy" /* yacc.c:1646  */
-    {printf("wyrazenie pojedyncze \n");}
-#line 1452 "def.tab.cc" /* yacc.c:1646  */
+#line 1458 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 202 "def.yy" /* yacc.c:1646  */
+#line 206 "def.yy" /* yacc.c:1646  */
+    {printf("wyrazenie pojedyncze \n");}
+#line 1464 "def.tab.cc" /* yacc.c:1646  */
+    break;
+
+  case 11:
+#line 209 "def.yy" /* yacc.c:1646  */
     {
                                     printf("skladnik z * \n"); 
                                     writeLexValue("*");
@@ -1487,11 +1499,11 @@ yyreduce:
                                     generateAsmX(e1, e2, e.varName, "mul");
 
                                 }
-#line 1491 "def.tab.cc" /* yacc.c:1646  */
+#line 1503 "def.tab.cc" /* yacc.c:1646  */
     break;
 
-  case 11:
-#line 236 "def.yy" /* yacc.c:1646  */
+  case 12:
+#line 243 "def.yy" /* yacc.c:1646  */
     {
                                     printf("skladnik z / \n");
                                     writeLexValue("/");
@@ -1524,17 +1536,17 @@ yyreduce:
                               
 
                                 }
-#line 1528 "def.tab.cc" /* yacc.c:1646  */
-    break;
-
-  case 12:
-#line 268 "def.yy" /* yacc.c:1646  */
-    {printf("skladnik pojedynczy \n");}
-#line 1534 "def.tab.cc" /* yacc.c:1646  */
+#line 1540 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 271 "def.yy" /* yacc.c:1646  */
+#line 275 "def.yy" /* yacc.c:1646  */
+    {printf("skladnik pojedynczy \n");}
+#line 1546 "def.tab.cc" /* yacc.c:1646  */
+    break;
+
+  case 14:
+#line 278 "def.yy" /* yacc.c:1646  */
     {
                                     printf("czynnik znakowy (zmienna) - %s\n",(yyvsp[0].text)); 
                                     fprintf(yyout, "%s ", (yyvsp[0].text));
@@ -1570,11 +1582,11 @@ if(isInSymbols(e.varName))
 
                                        
                                 }
-#line 1574 "def.tab.cc" /* yacc.c:1646  */
+#line 1586 "def.tab.cc" /* yacc.c:1646  */
     break;
 
-  case 14:
-#line 306 "def.yy" /* yacc.c:1646  */
+  case 15:
+#line 313 "def.yy" /* yacc.c:1646  */
     {
                                     printf("czynnik liczba zmiennoprzecinkowa %lf\n",(yyvsp[0].dval)); 
                                     fprintf(yyout, "%lf ", (yyvsp[0].dval));
@@ -1583,11 +1595,11 @@ if(isInSymbols(e.varName))
                                     ss << $1;
                                     s->push(ss.str());*/
                                 }
-#line 1587 "def.tab.cc" /* yacc.c:1646  */
+#line 1599 "def.tab.cc" /* yacc.c:1646  */
     break;
 
-  case 15:
-#line 314 "def.yy" /* yacc.c:1646  */
+  case 16:
+#line 321 "def.yy" /* yacc.c:1646  */
     {
                                     printf("czynnik liczba całkowita - %d\n",(yyvsp[0].ival)); 
                                     fprintf(yyout, "%d ", (yyvsp[0].ival)); 
@@ -1603,59 +1615,76 @@ if(isInSymbols(e.varName))
 
                                     s->push(e);
                                 }
-#line 1607 "def.tab.cc" /* yacc.c:1646  */
-    break;
-
-  case 16:
-#line 329 "def.yy" /* yacc.c:1646  */
-    {printf("wyrazenie w nawiasach\n");}
-#line 1613 "def.tab.cc" /* yacc.c:1646  */
-    break;
-
-  case 17:
-#line 332 "def.yy" /* yacc.c:1646  */
-    {printf("wyrazenie warunkowe\n");}
 #line 1619 "def.tab.cc" /* yacc.c:1646  */
     break;
 
+  case 17:
+#line 336 "def.yy" /* yacc.c:1646  */
+    {
+                                    cout << "czynnik - tekst" << endl;
+                                    element e;
+                                    e.type = tk;
+                                    e.val.textVal = (yyvsp[0].text);
+                                    
+                                    stringstream ss;
+                                    ss << (yyvsp[0].text);
+                                    e.varName = ss.str();
+
+                                    s->push(e);
+                                }
+#line 1636 "def.tab.cc" /* yacc.c:1646  */
+    break;
+
   case 18:
-#line 335 "def.yy" /* yacc.c:1646  */
-    {printf("operator mniejszosci - <\n");}
-#line 1625 "def.tab.cc" /* yacc.c:1646  */
+#line 349 "def.yy" /* yacc.c:1646  */
+    {printf("wyrazenie w nawiasach\n");}
+#line 1642 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 336 "def.yy" /* yacc.c:1646  */
-    {printf("operator wiekszosci - >\n");}
-#line 1631 "def.tab.cc" /* yacc.c:1646  */
+#line 352 "def.yy" /* yacc.c:1646  */
+    {printf("wyrazenie warunkowe\n");}
+#line 1648 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 337 "def.yy" /* yacc.c:1646  */
-    {printf("operator rownosci - ==\n");}
-#line 1637 "def.tab.cc" /* yacc.c:1646  */
+#line 355 "def.yy" /* yacc.c:1646  */
+    {printf("operator mniejszosci - <\n");}
+#line 1654 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 338 "def.yy" /* yacc.c:1646  */
-    {printf("operator nierownosci !=\n");}
-#line 1643 "def.tab.cc" /* yacc.c:1646  */
+#line 356 "def.yy" /* yacc.c:1646  */
+    {printf("operator wiekszosci - >\n");}
+#line 1660 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 339 "def.yy" /* yacc.c:1646  */
-    {printf("operator wiekszosci lub rownosci - >=\n");}
-#line 1649 "def.tab.cc" /* yacc.c:1646  */
+#line 357 "def.yy" /* yacc.c:1646  */
+    {printf("operator rownosci - ==\n");}
+#line 1666 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 340 "def.yy" /* yacc.c:1646  */
+#line 358 "def.yy" /* yacc.c:1646  */
+    {printf("operator nierownosci !=\n");}
+#line 1672 "def.tab.cc" /* yacc.c:1646  */
+    break;
+
+  case 24:
+#line 359 "def.yy" /* yacc.c:1646  */
+    {printf("operator wiekszosci lub rownosci - >=\n");}
+#line 1678 "def.tab.cc" /* yacc.c:1646  */
+    break;
+
+  case 25:
+#line 360 "def.yy" /* yacc.c:1646  */
     {printf("operator mniejszosci lub rownosci - <=\n");}
-#line 1655 "def.tab.cc" /* yacc.c:1646  */
+#line 1684 "def.tab.cc" /* yacc.c:1646  */
     break;
 
 
-#line 1659 "def.tab.cc" /* yacc.c:1646  */
+#line 1688 "def.tab.cc" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1883,7 +1912,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 342 "def.yy" /* yacc.c:1906  */
+#line 362 "def.yy" /* yacc.c:1906  */
 
 
 void generateAll()
@@ -1949,12 +1978,6 @@ void generateAsmX(element variable1, element variable2, string result, string op
         ss << "lw $t0, " << variable2.varName << "\t#type: \t" << (int)variable2.type << "\t" << operation << " to variable\n";
     }
     
-/*    ss << "lw $t0, " << variable2 << "\n";
-    codeAsm->push_back(ss.str());
-    ss.str("");*/
- /*   
-    ss << "\tli $t1, " << variable1.varName << "\n";*/
-    
     if(variable1.type == types::lc)
     {
         ss << "\tli $t1, " << variable1.varName << "\t#type: \t" << (int)variable1.type << "\t" << operation << " to value\n";
@@ -1993,7 +2016,32 @@ void generateAsmPrint(element variable1)
         ss << "lw $a0, " << variable1.varName << "\t#type: \t" << (int)variable1.type << "\tprint - variable\n";
     }
  
-    ss << "syscall\n\n";
+    ss << "\tsyscall\n\n";
+    codeAsm->push_back(ss.str());
+    ss.str("");
+}
+
+void generateAsmRead(element variable1)
+{
+    stringstream ss;
+    
+    ss << "li $v0, 5\n";
+    codeAsm->push_back(ss.str());
+    ss.str("");
+    
+    ss << "syscall\n";
+    codeAsm->push_back(ss.str());
+    ss.str("");
+    
+/*   if(variable1.type == types::lc)
+    {*/
+        ss << "sw $v0, " << variable1.varName << "\t#type: \t" << (int)variable1.type << "\tread - value\n\n";
+/*     } */
+/*    if(variable1.type == types::id)
+    {
+        ss << "lw $a0, " << variable1.varName << "\t#type: \t" << (int)variable1.type << "\tprint - variable\n";
+    }*/
+    
     codeAsm->push_back(ss.str());
     ss.str("");
 }

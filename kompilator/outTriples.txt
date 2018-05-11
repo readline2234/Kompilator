@@ -1,6 +1,1 @@
-_tmp0 = 2 2 *
-_tmp1 = _tmp0 2 +
-_tmp2 = 1 _tmp1 -
-_tmp3 = _tmp2 x =
-
 

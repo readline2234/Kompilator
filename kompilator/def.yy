@@ -36,7 +36,8 @@ union vals {
 enum types{
     lc = 0,
     lz = 1,
-    id = 2
+    id = 2,
+    tk = 3
 };
 
 struct element {
@@ -60,6 +61,7 @@ void generateAsmDef(element variable1, string variable2);
 void generateAsmMul(string variable1, string variable2, string result);
 void generateAsmX(element variable1, element variable2, string result, string operation);
 void generateAsmPrint(element variable1);
+void generateAsmRead(element variable1);
 
 bool isInSymbols(string name);
 
@@ -73,11 +75,11 @@ int	ival;
 double  dval;
 };
 %type <text> wyr
-%token CK ZM TK 
+%token CK ZM TK
 %token PISZ CZYTAJ 
 %token JEZELI TO JEZELINIE DOPOKI
 %token GT LT EQ GE LE NE
-%token <text> ID
+%token <text> ID TK
 %token <ival> LC
 %token <dval> LZ
 %left '+' '-'
@@ -89,6 +91,13 @@ start
         |ww
         |start wyr              {writeLexValue("\n"); outTriples << endl;}
         ;
+if_expr
+        :if_begin wyr           {}
+        ;
+if_begin
+        :JEZELI '(' cond_expr ')' {}
+        ;
+        
 wyr
 	:wyr '+' skladnik	{
                                     printf("wyrazenie z + \n"); 
@@ -160,6 +169,11 @@ wyr
                                 element e1 = s->top();
                                 s->pop();
                                 generateAsmPrint(e1);
+                            }
+        |CZYTAJ wyr         {
+                                element e1 = s->top();
+                                s->pop();
+                                generateAsmRead(e1);
                             }
        |wyr '=' wyr       {
                                     printf("wyrazenie z = \n"); 
@@ -326,6 +340,19 @@ if(isInSymbols(e.varName))
 
                                     s->push(e);
                                 }
+        |TK                     {
+                                    cout << "czynnik - tekst" << endl;
+                                    element e;
+                                    e.type = tk;
+                                    e.val.textVal = $1;
+                                    
+                                    stringstream ss;
+                                    ss << $1;
+                                    e.varName = ss.str();
+
+                                    s->push(e);
+                                }
+                                
 	|'(' wyr ')'		{printf("wyrazenie w nawiasach\n");}
 	;
 ww
@@ -442,14 +469,34 @@ void generateAsmPrint(element variable1)
         ss << "lw $a0, " << variable1.varName << "\t#type: \t" << (int)variable1.type << "\tprint - variable\n";
     }
  
-    ss << "syscall\n\n";
+    ss << "\tsyscall\n\n";
     codeAsm->push_back(ss.str());
     ss.str("");
 }
 
-void generate AsmRead
+void generateAsmRead(element variable1)
 {
+    stringstream ss;
     
+    ss << "li $v0, 5\n";
+    codeAsm->push_back(ss.str());
+    ss.str("");
+    
+    ss << "syscall\n";
+    codeAsm->push_back(ss.str());
+    ss.str("");
+    
+/*   if(variable1.type == types::lc)
+    {*/
+        ss << "sw $v0, " << variable1.varName << "\t#type: \t" << (int)variable1.type << "\tread - value\n\n";
+/*     } */
+/*    if(variable1.type == types::id)
+    {
+        ss << "lw $a0, " << variable1.varName << "\t#type: \t" << (int)variable1.type << "\tprint - variable\n";
+    }*/
+    
+    codeAsm->push_back(ss.str());
+    ss.str("");
 }
 
 bool isInSymbols(string name)
