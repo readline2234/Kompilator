@@ -35,6 +35,9 @@ DOPOKI                          {return DOPOKI;}
 \^			{return '^';}
 \=			{return '=';}
 
+\}                      {return '}';}
+\{                      {return '{';}
+
 [1-9][0-9]*[\.][0-9]+|[0][\.][0-9]+   {yylval.dval = atof(yytext); return LZ;}
 [1-9][0-9]*		{yylval.ival = atoi(yytext); return LC;}	
 [A-Za-z_][A-Za-z0-9_]*	{yylval.text = strdup(yytext); return ID;}

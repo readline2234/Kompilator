@@ -90,12 +90,16 @@ start
         :wyr                    {writeLexValue("\n"); outTriples << endl;}
         |ww
         |start wyr              {writeLexValue("\n"); outTriples << endl;}
+        |if_expr
         ;
 if_expr
-        :if_begin wyr           {}
+        :if_begin wyr           {cout << "IF" << endl;}
         ;
 if_begin
-        :JEZELI '(' cond_expr ')' {}
+        :JEZELI '(' cond_expr ')' TO '{' {cout << "IF - poczatek" << endl;}
+        ;
+cond_expr
+        :wyr
         ;
         
 wyr
