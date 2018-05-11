@@ -1974,9 +1974,14 @@ void generateAsmPrint(element variable1)
     codeAsm->push_back(ss.str());
     ss.str("");
     
-    ss << "li $a0, " << variable1.varName << "\n";
-    codeAsm->push_back(ss.str());
-    ss.str("");
+    if(variable1.type == types::lc)
+    {
+        ss << "li $a0, " << variable1.varName << "\t#type: \t" << (int)variable1.type << "\tprint - value\n";
+    }
+    if(variable1.type == types::id)
+    {
+        ss << "lw $a0, " << variable1.varName << "\t#type: \t" << (int)variable1.type << "\tprint - variable\n";
+    }
  
     ss << "syscall\n\n";
     codeAsm->push_back(ss.str());
