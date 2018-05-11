@@ -122,7 +122,7 @@ instructions
         ;
         
 wyr
-	:wyr '+' skladnik	{ 
+	:wyr '+' skladnik	{  
                                     printf("wyrazenie z + \n"); 
                                     writeLexValue("+"); 
                                     
