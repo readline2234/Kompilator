@@ -93,13 +93,17 @@ start
         |if_expr
         ;
 if_expr
-        :if_begin wyr           {cout << "IF" << endl;}
+        :if_begin code_block '}' {cout << "IF" << endl;}
         ;
 if_begin
         :JEZELI '(' cond_expr ')' TO '{' {cout << "IF - poczatek" << endl;}
         ;
 cond_expr
         :wyr
+        ;
+code_block
+        :code_block wyr
+        |wyr
         ;
         
 wyr

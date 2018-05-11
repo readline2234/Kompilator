@@ -8,8 +8,18 @@ li $t0, 2	#type: 	0	add to value
 add $t0, $t0, $t1
 sw $t0, _tmp1
 
-li $t0, 4	#type: 	0	add to value
-	li $t1, 4	#type: 	0	add to value
-add $t0, $t0, $t1
+li $t0, 12	#type: 	0	sub to value
+	li $t1, 3	#type: 	0	sub to value
+sub $t0, $t0, $t1
 sw $t0, _tmp2
+
+li $t0, 12	#type: 	0	add to value
+	li $t1, 12	#type: 	0	add to value
+add $t0, $t0, $t1
+sw $t0, _tmp3
+
+li $t0, 412412	#type: 	0	sub to value
+	li $t1, 123123	#type: 	0	sub to value
+sub $t0, $t0, $t1
+sw $t0, _tmp4
 
