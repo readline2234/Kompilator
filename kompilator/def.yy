@@ -1,8 +1,5 @@
 %{
-// #include <string.h>
 
-//TODO: Powtarzanie zmiennych w tablicy symboli - sprawdzanie przed dodaniem czy nie znajduje się w tablicy SYMBOLI
-//TODO: 
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -91,6 +88,7 @@ start
         |ww
         |start wyr              {writeLexValue("\n"); outTriples << endl;}
         |if_expr
+        |instructions
         ;
 if_expr
         :if_begin code_block '}' {cout << "IF" << endl;}
@@ -115,6 +113,12 @@ cond_operator
         |GT                     {printf("operator wiekszosci - >\n");} 
         |EQ                     {printf("operator rownosci - ==\n");} 
         |NE                     {printf("operator nierownosci !=\n");} 
+        ;
+        
+instructions
+        :code_block instructions
+        |code_block
+        |if_expr
         ;
         
 wyr

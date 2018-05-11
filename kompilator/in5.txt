@@ -1,4 +1,5 @@
-JEZELI ( 2+2 == 3+4 ) TO 
+x=5
+JEZELI ( x == 3+4 ) TO 
 { 
     2+2
 }
