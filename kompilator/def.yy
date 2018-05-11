@@ -1,6 +1,4 @@
 %{
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -56,8 +54,14 @@ fstream outAll("outAll.asm",std::ios::out);
 void addFunction();
 void subFunction();
 void mulFunction();
+void divFunction();
+void defFunction();
 void writeFunction();
 void readFunction();
+void idFunction(string param);
+void lzFunction(float param);
+void lcFunction(int param);
+void tkFunction(string param);
 
 void generateAsmAdd(string variable1, string variable2, string result);
 void generateAsmDef(element variable1, string variable2);
@@ -130,164 +134,23 @@ instructions
         ;
         
 wyr
-	:wyr '+' skladnik	{
-                                    addFunction();
-                                }
-	|wyr '-' skladnik	{
-                                    subFunction();
-                                }  
-        |PISZ wyr            {
-                                    writeFunction();
-                            }
-        |CZYTAJ wyr         {
-                                readFunction();
-                            }
-       |wyr '=' wyr       {
-                                    printf("wyrazenie z = \n"); 
-                                    writeLexValue("=");
-                                    
-                                    cout << "STACK SIZE: " << s->size() << endl;
-                                    
-                                    element e1;
-                                    e1 = s->top(); 
-                                    s->pop();
-                                    
-                                    element e2;
-                                    e2 = s->top();
-                                    s->pop();
-                                    
-                                    element e;
-                                    e.type = id;
-                                    
-                                    stringstream ss;
-                                    ss << "_tmp" << tempVariableCount;
-                                    e.varName = ss.str();
-                                    tempVariableCount++;
-                                    
-                                    outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " =" << endl;
-                                    
-                                    //DODAWANIE DO TABLICY SYMBOLI TUTAJ
-/*                                     symbols.insert(std::pair<int,element>(tempIDcount,e)); */
-                                    cout << ">>>>>>>>>" << isInSymbols(e.varName) << endl;
-
-                                    symbols[tempIDcount] = e;
-                                    tempIDcount++;
-                                    outSymbols << e.varName << "\t" << e.type << endl;
-                                    
-                                    generateAsmDef(e1, e2.varName);
-                                }
-                                
+	:wyr '+' skladnik	{ addFunction(); }
+	|wyr '-' skladnik	{ subFunction(); }
+        |PISZ wyr               { writeFunction(); }
+        |CZYTAJ wyr             { readFunction(); }
+        |wyr '=' wyr            { defFunction(); }
 	|skladnik		{printf("wyrazenie pojedyncze \n");}
 	;
 skladnik
-	:skladnik '*' czynnik	{
-                                    mulFunction();
-                                }
-	|skladnik '/' czynnik	{
-                                    printf("skladnik z / \n");
-                                    writeLexValue("/");
-                                    
-                                    cout << "Stack size :" << s->size() << endl;
-                                    
-                                    element e1 = s->top();
-                                    s->pop();
-                                    
-                                    element e2 = s->top();
-                                    s->pop(); 
-
-                                    element e;
-                                    e.type = id;
-                                    
-                                    
-                                    stringstream ss;
-                                    ss << "_tmp" << tempVariableCount;
-                                    e.varName = ss.str();
-                                    tempVariableCount++;
-                                    
-                                    outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " /" << endl;
-
-/*                                     symbols.insert(std::pair<int,element>(tempIDcount,e));  //albo ten sam KLUCZ  do mapy i nie mozna //albo wywolywanie tylko jeden raz */
-                                    symbols[tempIDcount] = e;
-                                    tempIDcount++;
-                                    outSymbols << e.varName << "\t" << e.type << endl;
-                                    
-                                    s->push(e);
-                              
-
-                                }
+	:skladnik '*' czynnik	{ mulFunction(); }
+	|skladnik '/' czynnik	{ divFunction(); }
 	|czynnik		{printf("skladnik pojedynczy \n");}
 	;
 czynnik
-	:ID			{
-                                    printf("czynnik znakowy (zmienna) - %s\n",$1); 
-                                    fprintf(yyout, "%s ", $1);
-                                    printf("\n>>PUSHING AT STACK<<\n");
-                                    
-                                    element e;
-                                    e.type = id;
-                                    
-                                    stringstream ss;
-                                    ss << $1;
-                                    e.varName = ss.str();
-
-                                    s->push(e);
-                                    
-                                    
-                                    //sprawdź czy symbol istneje
-                                    
-/*                                     if() */
-                                    
-/*                                         symbols.insert(std::pair<int,element>(tempIDcount,e)); */
-                                        cout << ">>>>>>>>>ID" << isInSymbols(e.varName) << endl;
-                                        
-if(isInSymbols(e.varName))
-                                        {
-                                            cout << "Symbol <" << e.varName << "> juz znajduje sie w tablicy symboli.";
-                                        }
-                                        else
-                                        {
-                                            symbols[tempIDcount] = e;
-                                            tempIDcount++;
-                                            outSymbols << e.varName << "\t" << e.type << endl;
-                                        }
-
-                                       
-                                } 
-        |LZ                     {
-                                    printf("czynnik liczba zmiennoprzecinkowa %lf\n",$1); 
-                                    fprintf(yyout, "%lf ", $1);
-                                    printf("\n>>PUSHING AT STACK<<\n");
-/*                                    std::stringstream ss;
-                                    ss << $1;
-                                    s->push(ss.str());*/
-                                }   
-	|LC			{
-                                    printf("czynnik liczba całkowita - %d\n",$1); 
-                                    fprintf(yyout, "%d ", $1); 
-                                    printf("\n>>PUSHING AT STACK<<\n");
-                                    
-                                    element e;
-                                    e.type = lc;
-                                    e.val.intVal = $1;
-                                    
-                                    stringstream ss;
-                                    ss << $1;
-                                    e.varName = ss.str();
-
-                                    s->push(e);
-                                }
-        |TK                     {
-                                    cout << "czynnik - tekst" << endl;
-                                    element e;
-                                    e.type = tk;
-                                    e.val.textVal = $1;
-                                    
-                                    stringstream ss;
-                                    ss << $1;
-                                    e.varName = ss.str();
-
-                                    s->push(e);
-                                }
+	:ID			{ idFunction($1); }
+        |LZ                     { lzFunction($1); }
+	|LC			{ lcFunction($1); }
+        |TK                     { tkFunction($1); }
                                 
 	|'(' wyr ')'		{printf("wyrazenie w nawiasach\n");}
 	;
@@ -303,6 +166,87 @@ opw
         |LE                     {printf("operator mniejszosci lub rownosci - <=\n");} 
         ;
 %%
+void idFunction(string param)
+{
+    
+/*                                     printf("czynnik znakowy (zmienna) - %s\n",$1);  */
+/*                                     fprintf(yyout, "%s ", $1); */
+/*                                     printf("\n>>PUSHING AT STACK<<\n"); */
+                                    
+                                    element e;
+                                    e.type = id;
+                                    
+                                    stringstream ss;
+                                    ss << param;
+                                    e.varName = ss.str();
+
+                                    s->push(e);
+                                    
+                                    
+                                    //sprawdź czy symbol istneje
+                                    
+/*                                     if() */
+                                    
+/*                                         symbols.insert(std::pair<int,element>(tempIDcount,e)); */
+                                        cout << ">>>>>>>>>ID" << isInSymbols(e.varName) << endl;
+                                        
+                                        if(isInSymbols(e.varName))
+                                        {
+                                            cout << "Symbol <" << e.varName << "> juz znajduje sie w tablicy symboli.";
+                                        }
+                                        else
+                                        {
+                                            symbols[tempIDcount] = e;
+                                            tempIDcount++;
+                                            outSymbols << e.varName << "\t" << e.type << endl;
+                                        }
+
+                                       
+}
+void lzFunction(float param)
+{
+    
+/*                                     printf("czynnik liczba zmiennoprzecinkowa %lf\n",$1);  */
+/*                                     fprintf(yyout, "%lf ", $1); */
+/*                                     printf("\n>>PUSHING AT STACK<<\n"); */
+/*                                    std::stringstream ss;
+                                    ss << $1;
+                                    s->push(ss.str());*/
+}
+void lcFunction(int param)
+{
+
+/*                                     printf("czynnik liczba całkowita - %d\n",$1);  */
+/*                                     fprintf(yyout, "%d ", $1);  */
+                                    printf("\n>>PUSHING AT STACK<<\n");
+                                    
+                                    element e;
+                                    e.type = lc;
+                                    e.val.intVal = param;
+                                    
+                                    stringstream ss;
+                                    ss << param;
+                                    e.varName = ss.str();
+
+                                    s->push(e);
+}
+void tkFunction(string param)
+{
+
+                                    cout << "czynnik - tekst" << endl;
+                                    element e;
+                                    e.type = tk;
+                                    //e.val.textVal = param;
+                                    // cannot convert ‘std::__cxx11::string {aka std::__cxx11::basic_string<char>}’ to ‘char*’ in assignment
+
+                                    
+                                    stringstream ss;
+                                    ss << param;
+                                    e.varName = ss.str();
+
+                                    s->push(e);
+}
+
 
 void addFunction()
 {
@@ -406,19 +350,89 @@ void mulFunction()
                                     generateAsmX(e1, e2, e.varName, "mul");
 
 }
+void divFunction()
+{
+    
+                                    printf("skladnik z / \n");
+                                    writeLexValue("/");
+                                    
+                                    cout << "Stack size :" << s->size() << endl;
+                                    
+                                    element e1 = s->top();
+                                    s->pop();
+                                    
+                                    element e2 = s->top();
+                                    s->pop(); 
+
+                                    element e;
+                                    e.type = id;
+                                    
+                                    
+                                    stringstream ss;
+                                    ss << "_tmp" << tempVariableCount;
+                                    e.varName = ss.str();
+                                    tempVariableCount++;
+                                    
+                                    outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " /" << endl;
+
+/*                                     symbols.insert(std::pair<int,element>(tempIDcount,e));  //albo ten sam KLUCZ  do mapy i nie mozna //albo wywolywanie tylko jeden raz */
+                                    symbols[tempIDcount] = e;
+                                    tempIDcount++;
+                                    outSymbols << e.varName << "\t" << e.type << endl;
+                                    
+                                    s->push(e);
+                              
+
+                               
+}
+void defFunction()
+{
+    printf("wyrazenie z = \n"); 
+                                    writeLexValue("=");
+                                    
+                                    cout << "STACK SIZE: " << s->size() << endl;
+                                    
+                                    element e1;
+                                    e1 = s->top(); 
+                                    s->pop();
+                                    
+                                    element e2;
+                                    e2 = s->top();
+                                    s->pop();
+                                    
+                                    element e;
+                                    e.type = id;
+                                    
+                                    stringstream ss;
+                                    ss << "_tmp" << tempVariableCount;
+                                    e.varName = ss.str();
+                                    tempVariableCount++;
+                                    
+                                    outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " =" << endl;
+                                    
+                                    //DODAWANIE DO TABLICY SYMBOLI TUTAJ
+/*                                     symbols.insert(std::pair<int,element>(tempIDcount,e)); */
+                                    cout << ">>>>>>>>>" << isInSymbols(e.varName) << endl;
+
+                                    symbols[tempIDcount] = e;
+                                    tempIDcount++;
+                                    outSymbols << e.varName << "\t" << e.type << endl;
+                                    
+                                    generateAsmDef(e1, e2.varName);
+}
 void writeFunction()
 {
     element e1 = s->top();
     s->pop();
     generateAsmPrint(e1);
 }
-
 void readFunction()
 {
     element e1 = s->top();
     s->pop();
     generateAsmRead(e1);
 }
+
 
 void generateAll()
 {

@@ -64,8 +64,6 @@
 /* Copy the first part of user declarations.  */
 #line 1 "def.yy" /* yacc.c:339  */
 
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -121,8 +119,14 @@ fstream outAll("outAll.asm",std::ios::out);
 void addFunction();
 void subFunction();
 void mulFunction();
+void divFunction();
+void defFunction();
 void writeFunction();
 void readFunction();
+void idFunction(string param);
+void lzFunction(float param);
+void lcFunction(int param);
+void tkFunction(string param);
 
 void generateAsmAdd(string variable1, string variable2, string result);
 void generateAsmDef(element variable1, string variable2);
@@ -136,7 +140,7 @@ bool isInSymbols(string name);
 int tempVariableCount = 0;
 int tempIDcount = 0;
 
-#line 140 "def.tab.cc" /* yacc.c:339  */
+#line 144 "def.tab.cc" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -197,13 +201,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 76 "def.yy" /* yacc.c:355  */
+#line 80 "def.yy" /* yacc.c:355  */
 
 char *text;
 int	ival;
 double  dval;
 
-#line 207 "def.tab.cc" /* yacc.c:355  */
+#line 211 "def.tab.cc" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -220,7 +224,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 224 "def.tab.cc" /* yacc.c:358  */
+#line 228 "def.tab.cc" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -517,13 +521,13 @@ static const yytype_uint8 yytranslate[] =
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_uint16 yyrline[] =
+static const yytype_uint8 yyrline[] =
 {
-       0,    95,    95,    96,    97,    98,    99,   102,   103,   106,
-     109,   110,   113,   114,   117,   120,   121,   122,   123,   127,
-     128,   129,   133,   136,   139,   142,   145,   180,   183,   186,
-     218,   221,   256,   264,   279,   292,   295,   298,   299,   300,
-     301,   302,   303
+       0,    99,    99,   100,   101,   102,   103,   106,   107,   110,
+     113,   114,   117,   118,   121,   124,   125,   126,   127,   131,
+     132,   133,   137,   138,   139,   140,   141,   142,   145,   146,
+     147,   150,   151,   152,   153,   155,   158,   161,   162,   163,
+     164,   165,   166
 };
 #endif
 
@@ -1345,327 +1349,187 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 95 "def.yy" /* yacc.c:1646  */
+#line 99 "def.yy" /* yacc.c:1646  */
     {writeLexValue("\n"); outTriples << endl;}
-#line 1351 "def.tab.cc" /* yacc.c:1646  */
+#line 1355 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 97 "def.yy" /* yacc.c:1646  */
+#line 101 "def.yy" /* yacc.c:1646  */
     {writeLexValue("\n"); outTriples << endl;}
-#line 1357 "def.tab.cc" /* yacc.c:1646  */
+#line 1361 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 102 "def.yy" /* yacc.c:1646  */
+#line 106 "def.yy" /* yacc.c:1646  */
     {outLexValue << "IF" << endl;}
-#line 1363 "def.tab.cc" /* yacc.c:1646  */
+#line 1367 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 103 "def.yy" /* yacc.c:1646  */
+#line 107 "def.yy" /* yacc.c:1646  */
     {outLexValue << "IF-else" << endl;}
-#line 1369 "def.tab.cc" /* yacc.c:1646  */
+#line 1373 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 106 "def.yy" /* yacc.c:1646  */
+#line 110 "def.yy" /* yacc.c:1646  */
     {outLexValue << "IF - poczatek" << endl;}
-#line 1375 "def.tab.cc" /* yacc.c:1646  */
+#line 1379 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 120 "def.yy" /* yacc.c:1646  */
+#line 124 "def.yy" /* yacc.c:1646  */
     {}
-#line 1381 "def.tab.cc" /* yacc.c:1646  */
+#line 1385 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 121 "def.yy" /* yacc.c:1646  */
+#line 125 "def.yy" /* yacc.c:1646  */
     {}
-#line 1387 "def.tab.cc" /* yacc.c:1646  */
+#line 1391 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 122 "def.yy" /* yacc.c:1646  */
+#line 126 "def.yy" /* yacc.c:1646  */
     {printf("operator rownosci - ==\n");}
-#line 1393 "def.tab.cc" /* yacc.c:1646  */
+#line 1397 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 123 "def.yy" /* yacc.c:1646  */
+#line 127 "def.yy" /* yacc.c:1646  */
     {printf("operator nierownosci !=\n");}
-#line 1399 "def.tab.cc" /* yacc.c:1646  */
+#line 1403 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 133 "def.yy" /* yacc.c:1646  */
-    {
-                                    addFunction();
-                                }
-#line 1407 "def.tab.cc" /* yacc.c:1646  */
+#line 137 "def.yy" /* yacc.c:1646  */
+    { addFunction(); }
+#line 1409 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 136 "def.yy" /* yacc.c:1646  */
-    {
-                                    subFunction();
-                                }
+#line 138 "def.yy" /* yacc.c:1646  */
+    { subFunction(); }
 #line 1415 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 24:
 #line 139 "def.yy" /* yacc.c:1646  */
-    {
-                                    writeFunction();
-                            }
-#line 1423 "def.tab.cc" /* yacc.c:1646  */
+    { writeFunction(); }
+#line 1421 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 142 "def.yy" /* yacc.c:1646  */
-    {
-                                readFunction();
-                            }
-#line 1431 "def.tab.cc" /* yacc.c:1646  */
+#line 140 "def.yy" /* yacc.c:1646  */
+    { readFunction(); }
+#line 1427 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 145 "def.yy" /* yacc.c:1646  */
-    {
-                                    printf("wyrazenie z = \n"); 
-                                    writeLexValue("=");
-                                    
-                                    cout << "STACK SIZE: " << s->size() << endl;
-                                    
-                                    element e1;
-                                    e1 = s->top(); 
-                                    s->pop();
-                                    
-                                    element e2;
-                                    e2 = s->top();
-                                    s->pop();
-                                    
-                                    element e;
-                                    e.type = id;
-                                    
-                                    stringstream ss;
-                                    ss << "_tmp" << tempVariableCount;
-                                    e.varName = ss.str();
-                                    tempVariableCount++;
-                                    
-                                    outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " =" << endl;
-                                    
-                                    //DODAWANIE DO TABLICY SYMBOLI TUTAJ
-/*                                     symbols.insert(std::pair<int,element>(tempIDcount,e)); */
-                                    cout << ">>>>>>>>>" << isInSymbols(e.varName) << endl;
-
-                                    symbols[tempIDcount] = e;
-                                    tempIDcount++;
-                                    outSymbols << e.varName << "\t" << e.type << endl;
-                                    
-                                    generateAsmDef(e1, e2.varName);
-                                }
-#line 1470 "def.tab.cc" /* yacc.c:1646  */
+#line 141 "def.yy" /* yacc.c:1646  */
+    { defFunction(); }
+#line 1433 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 180 "def.yy" /* yacc.c:1646  */
+#line 142 "def.yy" /* yacc.c:1646  */
     {printf("wyrazenie pojedyncze \n");}
-#line 1476 "def.tab.cc" /* yacc.c:1646  */
+#line 1439 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 183 "def.yy" /* yacc.c:1646  */
-    {
-                                    mulFunction();
-                                }
-#line 1484 "def.tab.cc" /* yacc.c:1646  */
+#line 145 "def.yy" /* yacc.c:1646  */
+    { mulFunction(); }
+#line 1445 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 186 "def.yy" /* yacc.c:1646  */
-    {
-                                    printf("skladnik z / \n");
-                                    writeLexValue("/");
-                                    
-                                    cout << "Stack size :" << s->size() << endl;
-                                    
-                                    element e1 = s->top();
-                                    s->pop();
-                                    
-                                    element e2 = s->top();
-                                    s->pop(); 
-
-                                    element e;
-                                    e.type = id;
-                                    
-                                    
-                                    stringstream ss;
-                                    ss << "_tmp" << tempVariableCount;
-                                    e.varName = ss.str();
-                                    tempVariableCount++;
-                                    
-                                    outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " /" << endl;
-
-/*                                     symbols.insert(std::pair<int,element>(tempIDcount,e));  //albo ten sam KLUCZ  do mapy i nie mozna //albo wywolywanie tylko jeden raz */
-                                    symbols[tempIDcount] = e;
-                                    tempIDcount++;
-                                    outSymbols << e.varName << "\t" << e.type << endl;
-                                    
-                                    s->push(e);
-                              
-
-                                }
-#line 1521 "def.tab.cc" /* yacc.c:1646  */
+#line 146 "def.yy" /* yacc.c:1646  */
+    { divFunction(); }
+#line 1451 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 218 "def.yy" /* yacc.c:1646  */
+#line 147 "def.yy" /* yacc.c:1646  */
     {printf("skladnik pojedynczy \n");}
-#line 1527 "def.tab.cc" /* yacc.c:1646  */
+#line 1457 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 221 "def.yy" /* yacc.c:1646  */
-    {
-                                    printf("czynnik znakowy (zmienna) - %s\n",(yyvsp[0].text)); 
-                                    fprintf(yyout, "%s ", (yyvsp[0].text));
-                                    printf("\n>>PUSHING AT STACK<<\n");
-                                    
-                                    element e;
-                                    e.type = id;
-                                    
-                                    stringstream ss;
-                                    ss << (yyvsp[0].text);
-                                    e.varName = ss.str();
-
-                                    s->push(e);
-                                    
-                                    
-                                    //sprawdź czy symbol istneje
-                                    
-/*                                     if() */
-                                    
-/*                                         symbols.insert(std::pair<int,element>(tempIDcount,e)); */
-                                        cout << ">>>>>>>>>ID" << isInSymbols(e.varName) << endl;
-                                        
-if(isInSymbols(e.varName))
-                                        {
-                                            cout << "Symbol <" << e.varName << "> juz znajduje sie w tablicy symboli.";
-                                        }
-                                        else
-                                        {
-                                            symbols[tempIDcount] = e;
-                                            tempIDcount++;
-                                            outSymbols << e.varName << "\t" << e.type << endl;
-                                        }
-
-                                       
-                                }
-#line 1567 "def.tab.cc" /* yacc.c:1646  */
+#line 150 "def.yy" /* yacc.c:1646  */
+    { idFunction((yyvsp[0].text)); }
+#line 1463 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 256 "def.yy" /* yacc.c:1646  */
-    {
-                                    printf("czynnik liczba zmiennoprzecinkowa %lf\n",(yyvsp[0].dval)); 
-                                    fprintf(yyout, "%lf ", (yyvsp[0].dval));
-                                    printf("\n>>PUSHING AT STACK<<\n");
-/*                                    std::stringstream ss;
-                                    ss << $1;
-                                    s->push(ss.str());*/
-                                }
-#line 1580 "def.tab.cc" /* yacc.c:1646  */
+#line 151 "def.yy" /* yacc.c:1646  */
+    { lzFunction((yyvsp[0].dval)); }
+#line 1469 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 264 "def.yy" /* yacc.c:1646  */
-    {
-                                    printf("czynnik liczba całkowita - %d\n",(yyvsp[0].ival)); 
-                                    fprintf(yyout, "%d ", (yyvsp[0].ival)); 
-                                    printf("\n>>PUSHING AT STACK<<\n");
-                                    
-                                    element e;
-                                    e.type = lc;
-                                    e.val.intVal = (yyvsp[0].ival);
-                                    
-                                    stringstream ss;
-                                    ss << (yyvsp[0].ival);
-                                    e.varName = ss.str();
-
-                                    s->push(e);
-                                }
-#line 1600 "def.tab.cc" /* yacc.c:1646  */
+#line 152 "def.yy" /* yacc.c:1646  */
+    { lcFunction((yyvsp[0].ival)); }
+#line 1475 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 279 "def.yy" /* yacc.c:1646  */
-    {
-                                    cout << "czynnik - tekst" << endl;
-                                    element e;
-                                    e.type = tk;
-                                    e.val.textVal = (yyvsp[0].text);
-                                    
-                                    stringstream ss;
-                                    ss << (yyvsp[0].text);
-                                    e.varName = ss.str();
-
-                                    s->push(e);
-                                }
-#line 1617 "def.tab.cc" /* yacc.c:1646  */
+#line 153 "def.yy" /* yacc.c:1646  */
+    { tkFunction((yyvsp[0].text)); }
+#line 1481 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 292 "def.yy" /* yacc.c:1646  */
+#line 155 "def.yy" /* yacc.c:1646  */
     {printf("wyrazenie w nawiasach\n");}
-#line 1623 "def.tab.cc" /* yacc.c:1646  */
+#line 1487 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 295 "def.yy" /* yacc.c:1646  */
+#line 158 "def.yy" /* yacc.c:1646  */
     {printf("wyrazenie warunkowe\n");}
-#line 1629 "def.tab.cc" /* yacc.c:1646  */
+#line 1493 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 298 "def.yy" /* yacc.c:1646  */
+#line 161 "def.yy" /* yacc.c:1646  */
     {printf("operator mniejszosci - <\n");}
-#line 1635 "def.tab.cc" /* yacc.c:1646  */
+#line 1499 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 299 "def.yy" /* yacc.c:1646  */
+#line 162 "def.yy" /* yacc.c:1646  */
     {printf("operator wiekszosci - >\n");}
-#line 1641 "def.tab.cc" /* yacc.c:1646  */
+#line 1505 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 300 "def.yy" /* yacc.c:1646  */
+#line 163 "def.yy" /* yacc.c:1646  */
     {printf("operator rownosci - ==\n");}
-#line 1647 "def.tab.cc" /* yacc.c:1646  */
+#line 1511 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 301 "def.yy" /* yacc.c:1646  */
+#line 164 "def.yy" /* yacc.c:1646  */
     {printf("operator nierownosci !=\n");}
-#line 1653 "def.tab.cc" /* yacc.c:1646  */
+#line 1517 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 302 "def.yy" /* yacc.c:1646  */
+#line 165 "def.yy" /* yacc.c:1646  */
     {printf("operator wiekszosci lub rownosci - >=\n");}
-#line 1659 "def.tab.cc" /* yacc.c:1646  */
+#line 1523 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 303 "def.yy" /* yacc.c:1646  */
+#line 166 "def.yy" /* yacc.c:1646  */
     {printf("operator mniejszosci lub rownosci - <=\n");}
-#line 1665 "def.tab.cc" /* yacc.c:1646  */
+#line 1529 "def.tab.cc" /* yacc.c:1646  */
     break;
 
 
-#line 1669 "def.tab.cc" /* yacc.c:1646  */
+#line 1533 "def.tab.cc" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1893,7 +1757,88 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 305 "def.yy" /* yacc.c:1906  */
+#line 168 "def.yy" /* yacc.c:1906  */
+
+void idFunction(string param)
+{
+    
+/*                                     printf("czynnik znakowy (zmienna) - %s\n",$1);  */
+/*                                     fprintf(yyout, "%s ", $1); */
+/*                                     printf("\n>>PUSHING AT STACK<<\n"); */
+                                    
+                                    element e;
+                                    e.type = id;
+                                    
+                                    stringstream ss;
+                                    ss << param;
+                                    e.varName = ss.str();
+
+                                    s->push(e);
+                                    
+                                    
+                                    //sprawdź czy symbol istneje
+                                    
+/*                                     if() */
+                                    
+/*                                         symbols.insert(std::pair<int,element>(tempIDcount,e)); */
+                                        cout << ">>>>>>>>>ID" << isInSymbols(e.varName) << endl;
+                                        
+                                        if(isInSymbols(e.varName))
+                                        {
+                                            cout << "Symbol <" << e.varName << "> juz znajduje sie w tablicy symboli.";
+                                        }
+                                        else
+                                        {
+                                            symbols[tempIDcount] = e;
+                                            tempIDcount++;
+                                            outSymbols << e.varName << "\t" << e.type << endl;
+                                        }
+
+                                       
+}
+void lzFunction(float param)
+{
+    
+/*                                     printf("czynnik liczba zmiennoprzecinkowa %lf\n",$1);  */
+/*                                     fprintf(yyout, "%lf ", $1); */
+/*                                     printf("\n>>PUSHING AT STACK<<\n"); */
+/*                                    std::stringstream ss;
+                                    ss << $1;
+                                    s->push(ss.str());*/
+}
+void lcFunction(int param)
+{
+
+/*                                     printf("czynnik liczba całkowita - %d\n",$1);  */
+/*                                     fprintf(yyout, "%d ", $1);  */
+                                    printf("\n>>PUSHING AT STACK<<\n");
+                                    
+                                    element e;
+                                    e.type = lc;
+                                    e.val.intVal = param;
+                                    
+                                    stringstream ss;
+                                    ss << param;
+                                    e.varName = ss.str();
+
+                                    s->push(e);
+}
+void tkFunction(string param)
+{
+
+                                    cout << "czynnik - tekst" << endl;
+                                    element e;
+                                    e.type = tk;
+                                    //e.val.textVal = param;
+                                    // cannot convert ‘std::__cxx11::string {aka std::__cxx11::basic_string<char>}’ to ‘char*’ in assignment
+
+                                    
+                                    stringstream ss;
+                                    ss << param;
+                                    e.varName = ss.str();
+
+                                    s->push(e);
+}
 
 
 void addFunction()
@@ -1998,19 +1943,89 @@ void mulFunction()
                                     generateAsmX(e1, e2, e.varName, "mul");
 
 }
+void divFunction()
+{
+    
+                                    printf("skladnik z / \n");
+                                    writeLexValue("/");
+                                    
+                                    cout << "Stack size :" << s->size() << endl;
+                                    
+                                    element e1 = s->top();
+                                    s->pop();
+                                    
+                                    element e2 = s->top();
+                                    s->pop(); 
+
+                                    element e;
+                                    e.type = id;
+                                    
+                                    
+                                    stringstream ss;
+                                    ss << "_tmp" << tempVariableCount;
+                                    e.varName = ss.str();
+                                    tempVariableCount++;
+                                    
+                                    outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " /" << endl;
+
+/*                                     symbols.insert(std::pair<int,element>(tempIDcount,e));  //albo ten sam KLUCZ  do mapy i nie mozna //albo wywolywanie tylko jeden raz */
+                                    symbols[tempIDcount] = e;
+                                    tempIDcount++;
+                                    outSymbols << e.varName << "\t" << e.type << endl;
+                                    
+                                    s->push(e);
+                              
+
+                               
+}
+void defFunction()
+{
+    printf("wyrazenie z = \n"); 
+                                    writeLexValue("=");
+                                    
+                                    cout << "STACK SIZE: " << s->size() << endl;
+                                    
+                                    element e1;
+                                    e1 = s->top(); 
+                                    s->pop();
+                                    
+                                    element e2;
+                                    e2 = s->top();
+                                    s->pop();
+                                    
+                                    element e;
+                                    e.type = id;
+                                    
+                                    stringstream ss;
+                                    ss << "_tmp" << tempVariableCount;
+                                    e.varName = ss.str();
+                                    tempVariableCount++;
+                                    
+                                    outTriples << e.varName + " = " << e1.varName << " " << e2.varName<< " =" << endl;
+                                    
+                                    //DODAWANIE DO TABLICY SYMBOLI TUTAJ
+/*                                     symbols.insert(std::pair<int,element>(tempIDcount,e)); */
+                                    cout << ">>>>>>>>>" << isInSymbols(e.varName) << endl;
+
+                                    symbols[tempIDcount] = e;
+                                    tempIDcount++;
+                                    outSymbols << e.varName << "\t" << e.type << endl;
+                                    
+                                    generateAsmDef(e1, e2.varName);
+}
 void writeFunction()
 {
     element e1 = s->top();
     s->pop();
     generateAsmPrint(e1);
 }
-
 void readFunction()
 {
     element e1 = s->top();
     s->pop();
     generateAsmRead(e1);
 }
+
 
 void generateAll()
 {
