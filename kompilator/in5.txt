@@ -1,1 +1,11 @@
-x=5+2
+JEZELI ( y > 2 ) TO
+{
+    JEZELI ( y > 1 ) TO
+    {
+        y = 2
+    }
+}
+JEZELINIE
+{
+    y = 1
+}

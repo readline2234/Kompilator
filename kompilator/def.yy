@@ -99,22 +99,22 @@ start
         :wyr                    {writeLexValue("\n"); outTriples << endl;}
         |ww
         |start wyr              {writeLexValue("\n"); outTriples << endl;}
-        |if_expr
+/*        |if_expr*/
         |instructions
         ;
 if_expr
-        :if_begin code_block '}'         {outLexValue << "IF" << endl;}
-        |if_begin code_block '}' if_else {outLexValue << "IF-else" << endl;}
+        :if_begin code_block '}'         {cout << ">>>>>>>>>>>>>>>>>>>>>>>IF" << endl;}
+        |if_begin code_block '}' if_else {cout << ">>>>>>>>>>>>>>>>>>>>>>>IF-else" << endl;}
         ;
 if_begin
-        :JEZELI '(' cond_expr ')' TO '{' {outLexValue << "IF - poczatek" << endl;}
+        :JEZELI '(' cond_expr ')' TO '{' {cout << ">>>>>>>>>>>>>>>>>>>>>>>IF - poczatek" << endl;}
         ;
 cond_expr
         :wyr
         |wyr cond_operator wyr
         ;
 code_block
-        :code_block wyr
+        :wyr code_block
         |wyr
         ;
 if_else
