@@ -45,6 +45,8 @@ stack <element> * s = new stack<element>;
 map <int, element> symbols;
 vector <string> * codeAsm = new vector <string>();
 
+string lastIfOperator;
+
 fstream outTriples("outTriples.txt",std::ios::out);
 fstream outLexValue("outLexValue.txt",std::ios::out);
 fstream outSymbols("outSymbols.txt",std::ios::out);
@@ -58,6 +60,12 @@ void divFunction();
 void defFunction();
 void writeFunction();
 void readFunction();
+
+void ifStartFunction();
+void conditionFunction();
+void conditionOperatorFunction();
+void foo();
+
 void idFunction(string param);
 void lzFunction(float param);
 void lcFunction(int param);
@@ -69,6 +77,7 @@ void generateAsmMul(string variable1, string variable2, string result);
 void generateAsmX(element variable1, element variable2, string result, string operation);
 void generateAsmPrint(element variable1);
 void generateAsmRead(element variable1);
+void generateAsmCondition(element variable1, element variable2);
 
 bool isInSymbols(string name);
 
@@ -96,43 +105,39 @@ double  dval;
 %start start
 %%
 start
-        :wyr                    {writeLexValue("\n"); outTriples << endl;}
-        |ww
-        |start wyr              {writeLexValue("\n"); outTriples << endl;}
-/*        |if_expr*/
-        |instructions
-        ;
-if_expr
-        :if_begin code_block '}'         {cout << ">>>>>>>>>>>>>>>>>>>>>>>IF" << endl;}
-        |if_begin code_block '}' if_else {cout << ">>>>>>>>>>>>>>>>>>>>>>>IF-else" << endl;}
-        ;
-if_begin
-        :JEZELI '(' cond_expr ')' TO '{' {cout << ">>>>>>>>>>>>>>>>>>>>>>>IF - poczatek" << endl;}
-        ;
-cond_expr
-        :wyr
-        |wyr cond_operator wyr
+        :code_block
         ;
 code_block
-        :wyr code_block
-        |wyr
+        :code_block single_instruction  {cout << "\t\t\tcode_block single_instruction" << endl;}
+        |single_instruction             {cout << "\t\t\tsingle_instruction" << endl;}
+        ;
+single_instruction
+        :wyr                            {cout << "\t\t\twyr" << endl;}
+        |if_expr                        { ifStartFunction(); }
+        ;
+if_expr
+        :if_begin if_mid code_block '}'         {cout << ">>>>>>>>>>>>>>>>>>>>>>>IF" << endl;}
+        |if_begin if_mid code_block '}' if_else {cout << ">>>>>>>>>>>>>>>>>>>>>>>IF-else" << endl;}
+        ;
+if_begin
+        :JEZELI '(' cond_expr ')' {cout << ">>>>>>>>>>>>>>>>>>>>>>>IF - poczatek" << endl;}
+        ;
+if_mid  
+        :TO '{'                         { foo(); }
         ;
 if_else
         :JEZELINIE '{' code_block '}'
         ;
+cond_expr
+        :wyr
+        |wyr cond_operator wyr          { conditionFunction(); }
+        ;
 cond_operator
-        :LT                     {} //outLexValue << "operator mniejszosci - <" << endl; } 
+        :LT                             { conditionOperatorFunction(); }
         |GT                     {} //outLexValue << "operator wiekszosci - >" << end;} 
         |EQ                     {printf("operator rownosci - ==\n");} 
         |NE                     {printf("operator nierownosci !=\n");} 
         ;
-        
-instructions
-        :code_block instructions
-        |code_block
-        |if_expr
-        ;
-        
 wyr
 	:wyr '+' skladnik	{ addFunction(); }
 	|wyr '-' skladnik	{ subFunction(); }
@@ -154,17 +159,6 @@ czynnik
                                 
 	|'(' wyr ')'		{printf("wyrazenie w nawiasach\n");}
 	;
-ww
-        :wyr opw wyr            {printf("wyrazenie warunkowe\n");} 
-	;
-opw	
-        :LT                     {printf("operator mniejszosci - <\n");} 
-        |GT                     {printf("operator wiekszosci - >\n");} 
-        |EQ                     {printf("operator rownosci - ==\n");} 
-        |NE                     {printf("operator nierownosci !=\n");} 
-        |GE                     {printf("operator wiekszosci lub rownosci - >=\n");} 
-        |LE                     {printf("operator mniejszosci lub rownosci - <=\n");} 
-        ;
 %%
 void idFunction(string param)
 {
@@ -432,6 +426,67 @@ void readFunction()
     s->pop();
     generateAsmRead(e1);
 }
+void ifStartFunction()
+{
+    cout << ">>>>>>>>>>>>>>>>>>>> IF-START" << endl;
+/*    cout << "STACK SIZE: " << s->size() << endl;
+    
+    element e1;
+    e1 = s->top(); 
+    s->pop();
+    
+    element e2;
+    e2 = s->top();
+    s->pop();
+    
+    element e;
+    e.type = id;
+    
+    stringstream ss;
+    ss << "_tmp" << tempVariableCount;
+    e.varName = ss.str();
+    tempVariableCount++;
+    
+    //DODAWANIE DO TABLICY SYMBOLI TUTAJ
+/*                                     symbols.insert(std::pair<int,element>(tempIDcount,e)); */
+/*    cout << ">>>>>>>>>" << isInSymbols(e.varName) << endl;
+
+    symbols[tempIDcount] = e;
+    tempIDcount++;
+    outSymbols << e.varName << "\t" << e.type << endl;
+    */
+/*     generateAsmDef(e1, e2.varName); */
+}
+void conditionFunction()
+{
+    element e1;
+    e1 = s->top(); 
+    s->pop();
+    
+    element e2;
+    e2 = s->top();
+    s->pop();
+    
+    cout << "\t\t\t <><><><><><><><><>" << e1.varName << endl;
+    cout << "\t\t\t <><><><><><><><><>" << e2.varName << endl;
+    generateAsmCondition(e1, e2);
+}
+void conditionOperatorFunction()
+{
+    cout << "\t\t\t <><><><><><><><><>operator mniejszosci - <" << endl;
+    
+    lastIfOperator = "LT";
+}
+void foo()
+{
+        stringstream ss;
+    ss << lastIfOperator << " $t2, $t3, LBL5" << "\n\n";
+    //TODO: tutaj powinno być odpowiednio BGE
+    codeAsm->push_back(ss.str());
+    ss.str("");
+}
+
+
 
 
 void generateAll()
@@ -559,6 +614,22 @@ void generateAsmRead(element variable1)
     
     codeAsm->push_back(ss.str());
     ss.str("");
+}
+void generateAsmCondition(element variable1, element variable2)
+{
+    stringstream ss;
+    
+    ss << "lw $t2, " << variable2.varName << "\n";
+    codeAsm->push_back(ss.str());
+    ss.str("");
+    
+    ss << "lw $t3, " << variable1.varName << "\n";
+    codeAsm->push_back(ss.str());
+    ss.str("");
+    
+/*    ss << "sw $v0, " << variable1.varName << "\t#type: \t" << (int)variable1.type << "\tread - value\n\n";
+    codeAsm->push_back(ss.str());
+    ss.str("");*/
 }
 
 bool isInSymbols(string name)

@@ -1,9 +1,7 @@
-JEZELI ( y > 2 ) TO
+x = 3
+JEZELI ( x < 5 + 4 ) TO
 {
-    JEZELI ( y > 1 ) TO
-    {
-        y = 2
-    }
+    y = 2
 }
 JEZELINIE
 {
