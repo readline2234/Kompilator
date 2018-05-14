@@ -16,11 +16,11 @@
 
 	lw $t2, x
 	lw $t3, _tmp1
-	LT $t2, $t3, LBL5
+	bge $t2, $t3, LBL5
 
 	li $t0, 2	#type: 	0	def to value
 	sw $t0, y
 
-	li $t0, 1	#type: 	0	def to value
-	sw $t0, y
+	li $t0, 2	#type: 	0	def to value
+	sw $t0, x
 

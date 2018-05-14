@@ -3,7 +3,4 @@ JEZELI ( x < 5 + 4 ) TO
 {
     y = 2
 }
-JEZELINIE
-{
-    y = 1
-}
+x = 2

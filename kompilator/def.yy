@@ -62,9 +62,8 @@ void writeFunction();
 void readFunction();
 
 void ifStartFunction();
-void conditionFunction();
-void conditionOperatorFunction();
-void foo();
+void conditionFunctionFirst();
+void conditionFunctionSecond();
 
 void idFunction(string param);
 void lzFunction(float param);
@@ -77,7 +76,8 @@ void generateAsmMul(string variable1, string variable2, string result);
 void generateAsmX(element variable1, element variable2, string result, string operation);
 void generateAsmPrint(element variable1);
 void generateAsmRead(element variable1);
-void generateAsmCondition(element variable1, element variable2);
+void generateAsmConditionFirst(element variable1, element variable2);
+void generateAsmConditionSecond();
 
 bool isInSymbols(string name);
 
@@ -120,23 +120,25 @@ if_expr
         |if_begin if_mid code_block '}' if_else {cout << ">>>>>>>>>>>>>>>>>>>>>>>IF-else" << endl;}
         ;
 if_begin
-        :JEZELI '(' cond_expr ')' {cout << ">>>>>>>>>>>>>>>>>>>>>>>IF - poczatek" << endl;}
+        :JEZELI '(' cond_expr ')'       {cout << ">>>>>>>>>>>>>>>>>>>>>>>IF - poczatek" << endl;}
         ;
 if_mid  
-        :TO '{'                         { foo(); }
+        :TO '{'                         { conditionFunctionSecond(); }
         ;
 if_else
         :JEZELINIE '{' code_block '}'
         ;
 cond_expr
         :wyr
-        |wyr cond_operator wyr          { conditionFunction(); }
+        |wyr cond_operator wyr          { conditionFunctionFirst(); }
         ;
 cond_operator
-        :LT                             { conditionOperatorFunction(); }
-        |GT                     {} //outLexValue << "operator wiekszosci - >" << end;} 
-        |EQ                     {printf("operator rownosci - ==\n");} 
-        |NE                     {printf("operator nierownosci !=\n");} 
+        :LT                             { lastIfOperator = "bge"; }
+        |GT                             { lastIfOperator = "ble"; }
+        |NE                             { lastIfOperator = "beq"; } 
+        |GE                             { lastIfOperator = "blt"; } 
+        |LE                             { lastIfOperator = "bgt"; }
+        |EQ                             { lastIfOperator = "bne"; }
         ;
 wyr
 	:wyr '+' skladnik	{ addFunction(); }
@@ -457,7 +459,7 @@ void ifStartFunction()
     */
 /*     generateAsmDef(e1, e2.varName); */
 }
-void conditionFunction()
+void conditionFunctionFirst()
 {
     element e1;
     e1 = s->top(); 
@@ -469,21 +471,11 @@ void conditionFunction()
     
     cout << "\t\t\t <><><><><><><><><>" << e1.varName << endl;
     cout << "\t\t\t <><><><><><><><><>" << e2.varName << endl;
-    generateAsmCondition(e1, e2);
+    generateAsmConditionFirst(e1, e2);
 }
-void conditionOperatorFunction()
+void conditionFunctionSecond()
 {
-    cout << "\t\t\t <><><><><><><><><>operator mniejszosci - <" << endl;
-    
-    lastIfOperator = "LT";
-}
-void foo()
-{
-        stringstream ss;
-    ss << lastIfOperator << " $t2, $t3, LBL5" << "\n\n";
-    //TODO: tutaj powinno być odpowiednio BGE
-    codeAsm->push_back(ss.str());
-    ss.str("");
+    generateAsmConditionSecond();
 }
 
 
@@ -615,7 +607,7 @@ void generateAsmRead(element variable1)
     codeAsm->push_back(ss.str());
     ss.str("");
 }
-void generateAsmCondition(element variable1, element variable2)
+void generateAsmConditionFirst(element variable1, element variable2)
 {
     stringstream ss;
     
@@ -626,10 +618,13 @@ void generateAsmCondition(element variable1, element variable2)
     ss << "lw $t3, " << variable1.varName << "\n";
     codeAsm->push_back(ss.str());
     ss.str("");
-    
-/*    ss << "sw $v0, " << variable1.varName << "\t#type: \t" << (int)variable1.type << "\tread - value\n\n";
+}
+void generateAsmConditionSecond()
+{
+    stringstream ss;
+    ss << lastIfOperator << " $t2, $t3, LBL5" << "\n\n";
     codeAsm->push_back(ss.str());
-    ss.str("");*/
+    ss.str("");
 }
 
 bool isInSymbols(string name)
