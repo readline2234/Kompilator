@@ -110,6 +110,7 @@ stack <element> * s = new stack<element>;
 map <int, element> symbols;
 vector <string> * codeAsm = new vector <string>();
 
+stack <int> * ifLabels = new stack<int>;
 string lastIfOperator;
 
 fstream outTriples("outTriples.txt",std::ios::out);
@@ -148,8 +149,9 @@ bool isInSymbols(string name);
 
 int tempVariableCount = 0;
 int tempIDcount = 0;
+int ifCount = 0;
 
-#line 153 "def.tab.cc" /* yacc.c:339  */
+#line 155 "def.tab.cc" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -210,13 +212,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 89 "def.yy" /* yacc.c:355  */
+#line 91 "def.yy" /* yacc.c:355  */
 
 char *text;
 int	ival;
 double  dval;
 
-#line 220 "def.tab.cc" /* yacc.c:355  */
+#line 222 "def.tab.cc" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -233,7 +235,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 237 "def.tab.cc" /* yacc.c:358  */
+#line 239 "def.tab.cc" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -532,10 +534,10 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   108,   108,   111,   112,   115,   116,   119,   120,   123,
-     126,   129,   132,   133,   136,   137,   138,   139,   140,   141,
-     144,   145,   146,   147,   148,   149,   152,   153,   154,   157,
-     158,   159,   160,   162
+       0,   110,   110,   113,   114,   117,   118,   121,   122,   125,
+     128,   131,   134,   135,   138,   139,   140,   141,   142,   143,
+     146,   147,   148,   149,   150,   151,   154,   155,   156,   159,
+     160,   161,   162,   164
 };
 #endif
 
@@ -1348,181 +1350,181 @@ yyreduce:
   switch (yyn)
     {
         case 3:
-#line 111 "def.yy" /* yacc.c:1646  */
+#line 113 "def.yy" /* yacc.c:1646  */
     {cout << "\t\t\tcode_block single_instruction" << endl;}
-#line 1354 "def.tab.cc" /* yacc.c:1646  */
+#line 1356 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 112 "def.yy" /* yacc.c:1646  */
+#line 114 "def.yy" /* yacc.c:1646  */
     {cout << "\t\t\tsingle_instruction" << endl;}
-#line 1360 "def.tab.cc" /* yacc.c:1646  */
+#line 1362 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 115 "def.yy" /* yacc.c:1646  */
+#line 117 "def.yy" /* yacc.c:1646  */
     {cout << "\t\t\twyr" << endl;}
-#line 1366 "def.tab.cc" /* yacc.c:1646  */
+#line 1368 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 116 "def.yy" /* yacc.c:1646  */
-    { ifStartFunction(); }
-#line 1372 "def.tab.cc" /* yacc.c:1646  */
+#line 118 "def.yy" /* yacc.c:1646  */
+    {}
+#line 1374 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 119 "def.yy" /* yacc.c:1646  */
-    {cout << ">>>>>>>>>>>>>>>>>>>>>>>IF" << endl;}
-#line 1378 "def.tab.cc" /* yacc.c:1646  */
+#line 121 "def.yy" /* yacc.c:1646  */
+    { ifStartFunction();}
+#line 1380 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 120 "def.yy" /* yacc.c:1646  */
-    {cout << ">>>>>>>>>>>>>>>>>>>>>>>IF-else" << endl;}
-#line 1384 "def.tab.cc" /* yacc.c:1646  */
+#line 122 "def.yy" /* yacc.c:1646  */
+    { ifStartFunction();}
+#line 1386 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 123 "def.yy" /* yacc.c:1646  */
-    {cout << ">>>>>>>>>>>>>>>>>>>>>>>IF - poczatek" << endl;}
-#line 1390 "def.tab.cc" /* yacc.c:1646  */
+#line 125 "def.yy" /* yacc.c:1646  */
+    { ifStartFunction(); }
+#line 1392 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 126 "def.yy" /* yacc.c:1646  */
+#line 128 "def.yy" /* yacc.c:1646  */
     { conditionFunctionSecond(); }
-#line 1396 "def.tab.cc" /* yacc.c:1646  */
+#line 1398 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 133 "def.yy" /* yacc.c:1646  */
+#line 135 "def.yy" /* yacc.c:1646  */
     { conditionFunctionFirst(); }
-#line 1402 "def.tab.cc" /* yacc.c:1646  */
+#line 1404 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 136 "def.yy" /* yacc.c:1646  */
+#line 138 "def.yy" /* yacc.c:1646  */
     { lastIfOperator = "bge"; }
-#line 1408 "def.tab.cc" /* yacc.c:1646  */
+#line 1410 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 137 "def.yy" /* yacc.c:1646  */
+#line 139 "def.yy" /* yacc.c:1646  */
     { lastIfOperator = "ble"; }
-#line 1414 "def.tab.cc" /* yacc.c:1646  */
+#line 1416 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 138 "def.yy" /* yacc.c:1646  */
+#line 140 "def.yy" /* yacc.c:1646  */
     { lastIfOperator = "beq"; }
-#line 1420 "def.tab.cc" /* yacc.c:1646  */
+#line 1422 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 139 "def.yy" /* yacc.c:1646  */
+#line 141 "def.yy" /* yacc.c:1646  */
     { lastIfOperator = "blt"; }
-#line 1426 "def.tab.cc" /* yacc.c:1646  */
+#line 1428 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 140 "def.yy" /* yacc.c:1646  */
+#line 142 "def.yy" /* yacc.c:1646  */
     { lastIfOperator = "bgt"; }
-#line 1432 "def.tab.cc" /* yacc.c:1646  */
+#line 1434 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 141 "def.yy" /* yacc.c:1646  */
+#line 143 "def.yy" /* yacc.c:1646  */
     { lastIfOperator = "bne"; }
-#line 1438 "def.tab.cc" /* yacc.c:1646  */
+#line 1440 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 144 "def.yy" /* yacc.c:1646  */
+#line 146 "def.yy" /* yacc.c:1646  */
     { addFunction(); }
-#line 1444 "def.tab.cc" /* yacc.c:1646  */
+#line 1446 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 145 "def.yy" /* yacc.c:1646  */
+#line 147 "def.yy" /* yacc.c:1646  */
     { subFunction(); }
-#line 1450 "def.tab.cc" /* yacc.c:1646  */
+#line 1452 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 146 "def.yy" /* yacc.c:1646  */
+#line 148 "def.yy" /* yacc.c:1646  */
     { writeFunction(); }
-#line 1456 "def.tab.cc" /* yacc.c:1646  */
+#line 1458 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 147 "def.yy" /* yacc.c:1646  */
+#line 149 "def.yy" /* yacc.c:1646  */
     { readFunction(); }
-#line 1462 "def.tab.cc" /* yacc.c:1646  */
+#line 1464 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 148 "def.yy" /* yacc.c:1646  */
+#line 150 "def.yy" /* yacc.c:1646  */
     { defFunction(); }
-#line 1468 "def.tab.cc" /* yacc.c:1646  */
+#line 1470 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 149 "def.yy" /* yacc.c:1646  */
+#line 151 "def.yy" /* yacc.c:1646  */
     {printf("wyrazenie pojedyncze \n");}
-#line 1474 "def.tab.cc" /* yacc.c:1646  */
+#line 1476 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 152 "def.yy" /* yacc.c:1646  */
+#line 154 "def.yy" /* yacc.c:1646  */
     { mulFunction(); }
-#line 1480 "def.tab.cc" /* yacc.c:1646  */
+#line 1482 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 153 "def.yy" /* yacc.c:1646  */
+#line 155 "def.yy" /* yacc.c:1646  */
     { divFunction(); }
-#line 1486 "def.tab.cc" /* yacc.c:1646  */
+#line 1488 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 154 "def.yy" /* yacc.c:1646  */
+#line 156 "def.yy" /* yacc.c:1646  */
     {printf("skladnik pojedynczy \n");}
-#line 1492 "def.tab.cc" /* yacc.c:1646  */
+#line 1494 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 157 "def.yy" /* yacc.c:1646  */
+#line 159 "def.yy" /* yacc.c:1646  */
     { idFunction((yyvsp[0].text)); }
-#line 1498 "def.tab.cc" /* yacc.c:1646  */
+#line 1500 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 158 "def.yy" /* yacc.c:1646  */
+#line 160 "def.yy" /* yacc.c:1646  */
     { lzFunction((yyvsp[0].dval)); }
-#line 1504 "def.tab.cc" /* yacc.c:1646  */
+#line 1506 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 159 "def.yy" /* yacc.c:1646  */
+#line 161 "def.yy" /* yacc.c:1646  */
     { lcFunction((yyvsp[0].ival)); }
-#line 1510 "def.tab.cc" /* yacc.c:1646  */
+#line 1512 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 160 "def.yy" /* yacc.c:1646  */
+#line 162 "def.yy" /* yacc.c:1646  */
     { tkFunction((yyvsp[0].text)); }
-#line 1516 "def.tab.cc" /* yacc.c:1646  */
+#line 1518 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 162 "def.yy" /* yacc.c:1646  */
+#line 164 "def.yy" /* yacc.c:1646  */
     {printf("wyrazenie w nawiasach\n");}
-#line 1522 "def.tab.cc" /* yacc.c:1646  */
+#line 1524 "def.tab.cc" /* yacc.c:1646  */
     break;
 
 
-#line 1526 "def.tab.cc" /* yacc.c:1646  */
+#line 1528 "def.tab.cc" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1750,7 +1752,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 164 "def.yy" /* yacc.c:1906  */
+#line 166 "def.yy" /* yacc.c:1906  */
 
 void idFunction(string param)
 {
@@ -2020,34 +2022,9 @@ void readFunction()
 }
 void ifStartFunction()
 {
-    cout << ">>>>>>>>>>>>>>>>>>>> IF-START" << endl;
-/*    cout << "STACK SIZE: " << s->size() << endl;
-    
-    element e1;
-    e1 = s->top(); 
-    s->pop();
-    
-    element e2;
-    e2 = s->top();
-    s->pop();
-    
-    element e;
-    e.type = id;
-    
-    stringstream ss;
-    ss << "_tmp" << tempVariableCount;
-    e.varName = ss.str();
-    tempVariableCount++;
-    
-    //DODAWANIE DO TABLICY SYMBOLI TUTAJ
-/*                                     symbols.insert(std::pair<int,element>(tempIDcount,e)); */
-/*    cout << ">>>>>>>>>" << isInSymbols(e.varName) << endl;
-
-    symbols[tempIDcount] = e;
-    tempIDcount++;
-    outSymbols << e.varName << "\t" << e.type << endl;
-    */
-/*     generateAsmDef(e1, e2.varName); */
+    ifCount++;
+    ifLabels->push(ifCount);
+    cout << "------------ PUSHED A LABEL" << endl;
 }
 void conditionFunctionFirst()
 {
@@ -2211,8 +2188,13 @@ void generateAsmConditionFirst(element variable1, element variable2)
 }
 void generateAsmConditionSecond()
 {
+    cout << "---------------------generateAsmConditionSecond";
     stringstream ss;
-    ss << lastIfOperator << " $t2, $t3, LBL5" << "\n\n";
+    //TODO: Trzeba ściągnąc odpowiednią etykietę ze stosu
+/*     int actualLabelNumber = ifLabels->top(); */
+/*     ifLabels->pop(); */
+/*     ss << lastIfOperator << " $t2, $t3, " << "LBL" + actualLabelNumber << "\n\n"; */
+    ss << lastIfOperator << " $t2, $t3, " << "LBL5"  << "\n\n";
     codeAsm->push_back(ss.str());
     ss.str("");
 }

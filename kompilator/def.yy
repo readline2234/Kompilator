@@ -45,6 +45,7 @@ stack <element> * s = new stack<element>;
 map <int, element> symbols;
 vector <string> * codeAsm = new vector <string>();
 
+stack <int> * ifLabels = new stack<int>;
 string lastIfOperator;
 
 fstream outTriples("outTriples.txt",std::ios::out);
@@ -83,6 +84,7 @@ bool isInSymbols(string name);
 
 int tempVariableCount = 0;
 int tempIDcount = 0;
+int ifCount = 0;
 %}
 
 %union 
@@ -113,14 +115,14 @@ code_block
         ;
 single_instruction
         :wyr                            {cout << "\t\t\twyr" << endl;}
-        |if_expr                        { ifStartFunction(); }
+        |if_expr                        {}
         ;
 if_expr
-        :if_begin if_mid code_block '}'         {cout << ">>>>>>>>>>>>>>>>>>>>>>>IF" << endl;}
-        |if_begin if_mid code_block '}' if_else {cout << ">>>>>>>>>>>>>>>>>>>>>>>IF-else" << endl;}
+        :if_begin if_mid code_block '}'         {}
+        |if_begin if_mid code_block '}' if_else {}
         ;
 if_begin
-        :JEZELI '(' cond_expr ')'       {cout << ">>>>>>>>>>>>>>>>>>>>>>>IF - poczatek" << endl;}
+        :JEZELI '(' cond_expr ')'       { ifStartFunction(); }
         ;
 if_mid  
         :TO '{'                         { conditionFunctionSecond(); }
@@ -430,34 +432,9 @@ void readFunction()
 }
 void ifStartFunction()
 {
-    cout << ">>>>>>>>>>>>>>>>>>>> IF-START" << endl;
-/*    cout << "STACK SIZE: " << s->size() << endl;
-    
-    element e1;
-    e1 = s->top(); 
-    s->pop();
-    
-    element e2;
-    e2 = s->top();
-    s->pop();
-    
-    element e;
-    e.type = id;
-    
-    stringstream ss;
-    ss << "_tmp" << tempVariableCount;
-    e.varName = ss.str();
-    tempVariableCount++;
-    
-    //DODAWANIE DO TABLICY SYMBOLI TUTAJ
-/*                                     symbols.insert(std::pair<int,element>(tempIDcount,e)); */
-/*    cout << ">>>>>>>>>" << isInSymbols(e.varName) << endl;
-
-    symbols[tempIDcount] = e;
-    tempIDcount++;
-    outSymbols << e.varName << "\t" << e.type << endl;
-    */
-/*     generateAsmDef(e1, e2.varName); */
+    ifCount++;
+    ifLabels->push(ifCount);
+    cout << "------------ PUSHED A LABEL" << endl;
 }
 void conditionFunctionFirst()
 {
@@ -621,8 +598,13 @@ void generateAsmConditionFirst(element variable1, element variable2)
 }
 void generateAsmConditionSecond()
 {
+    cout << "---------------------generateAsmConditionSecond";
     stringstream ss;
-    ss << lastIfOperator << " $t2, $t3, LBL5" << "\n\n";
+    //TODO: Trzeba ściągnąc odpowiednią etykietę ze stosu
+/*     int actualLabelNumber = ifLabels->top(); */
+/*     ifLabels->pop(); */
+/*     ss << lastIfOperator << " $t2, $t3, " << "LBL" + actualLabelNumber << "\n\n"; */
+    ss << lastIfOperator << " $t2, $t3, " << "LBL5"  << "\n\n";
     codeAsm->push_back(ss.str());
     ss.str("");
 }
