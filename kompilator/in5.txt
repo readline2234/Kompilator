@@ -3,5 +3,8 @@ JEZELI ( x <= 5 ) TO
 {
     PISZ 1
 }
-PISZ 2
+JEZELINIE
+{
+    PISZ 2
+}
 

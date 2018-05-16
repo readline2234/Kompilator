@@ -437,7 +437,6 @@ void ifStartFunction()
 {
     ifCount++;
     ifLabels->push(ifCount);
-    cout << "------------ PUSHED A LABEL" << endl;
 }
 void ifEndFunction()
 {
@@ -461,8 +460,6 @@ void conditionFunctionSecond()
 {
     generateAsmConditionSecond();
 }
-
-
 
 
 void generateAll()
@@ -492,6 +489,7 @@ void generateAsm()
         outAsm << codeAsm->at(i);
     }
 }
+
 
 void generateAsmDef(element variable1, string variable2)
 {
@@ -616,14 +614,6 @@ void generateAsmConditionFirst(element variable1, element variable2)
     }
     codeAsm->push_back(ss.str());
     ss.str("");
-    
-/*    ss << "lw $t2, " << variable2.varName << "\n";
-    codeAsm->push_back(ss.str());
-    ss.str("");
-    
-    ss << "lw $t3, " << variable1.varName << "\n";
-    codeAsm->push_back(ss.str());
-    ss.str("");*/
 }
 void generateAsmConditionSecond()
 {

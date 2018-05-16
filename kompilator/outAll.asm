@@ -13,8 +13,6 @@
 	li $a0, 1	#type: 	0	print - value
 	syscall
 
-	LBL1:
-
 	li $v0, 1
 	li $a0, 2	#type: 	0	print - value
 	syscall
