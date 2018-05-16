@@ -77,6 +77,7 @@
 
 #define INFILE_ERROR 1
 #define OUTFILE_ERROR 2
+
 void writeLexValue(char *);
 extern int yylineno;
 
@@ -128,6 +129,7 @@ void writeFunction();
 void readFunction();
 
 void ifStartFunction();
+void ifEndFunction();
 void conditionFunctionFirst();
 void conditionFunctionSecond();
 
@@ -144,6 +146,7 @@ void generateAsmPrint(element variable1);
 void generateAsmRead(element variable1);
 void generateAsmConditionFirst(element variable1, element variable2);
 void generateAsmConditionSecond();
+void generateAsmIfEnd();
 
 bool isInSymbols(string name);
 
@@ -151,7 +154,7 @@ int tempVariableCount = 0;
 int tempIDcount = 0;
 int ifCount = 0;
 
-#line 155 "def.tab.cc" /* yacc.c:339  */
+#line 158 "def.tab.cc" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -212,13 +215,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 91 "def.yy" /* yacc.c:355  */
+#line 94 "def.yy" /* yacc.c:355  */
 
 char *text;
 int	ival;
 double  dval;
 
-#line 222 "def.tab.cc" /* yacc.c:355  */
+#line 225 "def.tab.cc" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -235,7 +238,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 239 "def.tab.cc" /* yacc.c:358  */
+#line 242 "def.tab.cc" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -534,10 +537,10 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   110,   110,   113,   114,   117,   118,   121,   122,   125,
-     128,   131,   134,   135,   138,   139,   140,   141,   142,   143,
-     146,   147,   148,   149,   150,   151,   154,   155,   156,   159,
-     160,   161,   162,   164
+       0,   113,   113,   116,   117,   120,   121,   124,   125,   128,
+     131,   134,   137,   138,   141,   142,   143,   144,   145,   146,
+     149,   150,   151,   152,   153,   154,   157,   158,   159,   162,
+     163,   164,   165,   167
 };
 #endif
 
@@ -1350,181 +1353,181 @@ yyreduce:
   switch (yyn)
     {
         case 3:
-#line 113 "def.yy" /* yacc.c:1646  */
+#line 116 "def.yy" /* yacc.c:1646  */
     {cout << "\t\t\tcode_block single_instruction" << endl;}
-#line 1356 "def.tab.cc" /* yacc.c:1646  */
+#line 1359 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 114 "def.yy" /* yacc.c:1646  */
+#line 117 "def.yy" /* yacc.c:1646  */
     {cout << "\t\t\tsingle_instruction" << endl;}
-#line 1362 "def.tab.cc" /* yacc.c:1646  */
+#line 1365 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 117 "def.yy" /* yacc.c:1646  */
+#line 120 "def.yy" /* yacc.c:1646  */
     {cout << "\t\t\twyr" << endl;}
-#line 1368 "def.tab.cc" /* yacc.c:1646  */
+#line 1371 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 118 "def.yy" /* yacc.c:1646  */
+#line 121 "def.yy" /* yacc.c:1646  */
     {}
-#line 1374 "def.tab.cc" /* yacc.c:1646  */
+#line 1377 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 121 "def.yy" /* yacc.c:1646  */
-    { ifStartFunction();}
-#line 1380 "def.tab.cc" /* yacc.c:1646  */
+#line 124 "def.yy" /* yacc.c:1646  */
+    { ifEndFunction(); }
+#line 1383 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 122 "def.yy" /* yacc.c:1646  */
-    { ifStartFunction();}
-#line 1386 "def.tab.cc" /* yacc.c:1646  */
+#line 125 "def.yy" /* yacc.c:1646  */
+    {}
+#line 1389 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 125 "def.yy" /* yacc.c:1646  */
+#line 128 "def.yy" /* yacc.c:1646  */
     { ifStartFunction(); }
-#line 1392 "def.tab.cc" /* yacc.c:1646  */
+#line 1395 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 128 "def.yy" /* yacc.c:1646  */
+#line 131 "def.yy" /* yacc.c:1646  */
     { conditionFunctionSecond(); }
-#line 1398 "def.tab.cc" /* yacc.c:1646  */
+#line 1401 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 135 "def.yy" /* yacc.c:1646  */
+#line 138 "def.yy" /* yacc.c:1646  */
     { conditionFunctionFirst(); }
-#line 1404 "def.tab.cc" /* yacc.c:1646  */
+#line 1407 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 138 "def.yy" /* yacc.c:1646  */
+#line 141 "def.yy" /* yacc.c:1646  */
     { lastIfOperator = "bge"; }
-#line 1410 "def.tab.cc" /* yacc.c:1646  */
+#line 1413 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 139 "def.yy" /* yacc.c:1646  */
+#line 142 "def.yy" /* yacc.c:1646  */
     { lastIfOperator = "ble"; }
-#line 1416 "def.tab.cc" /* yacc.c:1646  */
+#line 1419 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 140 "def.yy" /* yacc.c:1646  */
+#line 143 "def.yy" /* yacc.c:1646  */
     { lastIfOperator = "beq"; }
-#line 1422 "def.tab.cc" /* yacc.c:1646  */
+#line 1425 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 141 "def.yy" /* yacc.c:1646  */
+#line 144 "def.yy" /* yacc.c:1646  */
     { lastIfOperator = "blt"; }
-#line 1428 "def.tab.cc" /* yacc.c:1646  */
+#line 1431 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 142 "def.yy" /* yacc.c:1646  */
+#line 145 "def.yy" /* yacc.c:1646  */
     { lastIfOperator = "bgt"; }
-#line 1434 "def.tab.cc" /* yacc.c:1646  */
+#line 1437 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 143 "def.yy" /* yacc.c:1646  */
+#line 146 "def.yy" /* yacc.c:1646  */
     { lastIfOperator = "bne"; }
-#line 1440 "def.tab.cc" /* yacc.c:1646  */
+#line 1443 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 146 "def.yy" /* yacc.c:1646  */
+#line 149 "def.yy" /* yacc.c:1646  */
     { addFunction(); }
-#line 1446 "def.tab.cc" /* yacc.c:1646  */
+#line 1449 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 147 "def.yy" /* yacc.c:1646  */
+#line 150 "def.yy" /* yacc.c:1646  */
     { subFunction(); }
-#line 1452 "def.tab.cc" /* yacc.c:1646  */
+#line 1455 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 148 "def.yy" /* yacc.c:1646  */
+#line 151 "def.yy" /* yacc.c:1646  */
     { writeFunction(); }
-#line 1458 "def.tab.cc" /* yacc.c:1646  */
+#line 1461 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 149 "def.yy" /* yacc.c:1646  */
+#line 152 "def.yy" /* yacc.c:1646  */
     { readFunction(); }
-#line 1464 "def.tab.cc" /* yacc.c:1646  */
+#line 1467 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 150 "def.yy" /* yacc.c:1646  */
+#line 153 "def.yy" /* yacc.c:1646  */
     { defFunction(); }
-#line 1470 "def.tab.cc" /* yacc.c:1646  */
+#line 1473 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 151 "def.yy" /* yacc.c:1646  */
+#line 154 "def.yy" /* yacc.c:1646  */
     {printf("wyrazenie pojedyncze \n");}
-#line 1476 "def.tab.cc" /* yacc.c:1646  */
+#line 1479 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 154 "def.yy" /* yacc.c:1646  */
+#line 157 "def.yy" /* yacc.c:1646  */
     { mulFunction(); }
-#line 1482 "def.tab.cc" /* yacc.c:1646  */
+#line 1485 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 155 "def.yy" /* yacc.c:1646  */
+#line 158 "def.yy" /* yacc.c:1646  */
     { divFunction(); }
-#line 1488 "def.tab.cc" /* yacc.c:1646  */
+#line 1491 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 156 "def.yy" /* yacc.c:1646  */
+#line 159 "def.yy" /* yacc.c:1646  */
     {printf("skladnik pojedynczy \n");}
-#line 1494 "def.tab.cc" /* yacc.c:1646  */
+#line 1497 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 159 "def.yy" /* yacc.c:1646  */
+#line 162 "def.yy" /* yacc.c:1646  */
     { idFunction((yyvsp[0].text)); }
-#line 1500 "def.tab.cc" /* yacc.c:1646  */
+#line 1503 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 160 "def.yy" /* yacc.c:1646  */
+#line 163 "def.yy" /* yacc.c:1646  */
     { lzFunction((yyvsp[0].dval)); }
-#line 1506 "def.tab.cc" /* yacc.c:1646  */
+#line 1509 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 161 "def.yy" /* yacc.c:1646  */
+#line 164 "def.yy" /* yacc.c:1646  */
     { lcFunction((yyvsp[0].ival)); }
-#line 1512 "def.tab.cc" /* yacc.c:1646  */
+#line 1515 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 162 "def.yy" /* yacc.c:1646  */
+#line 165 "def.yy" /* yacc.c:1646  */
     { tkFunction((yyvsp[0].text)); }
-#line 1518 "def.tab.cc" /* yacc.c:1646  */
+#line 1521 "def.tab.cc" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 164 "def.yy" /* yacc.c:1646  */
+#line 167 "def.yy" /* yacc.c:1646  */
     {printf("wyrazenie w nawiasach\n");}
-#line 1524 "def.tab.cc" /* yacc.c:1646  */
+#line 1527 "def.tab.cc" /* yacc.c:1646  */
     break;
 
 
-#line 1528 "def.tab.cc" /* yacc.c:1646  */
+#line 1531 "def.tab.cc" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1752,7 +1755,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 166 "def.yy" /* yacc.c:1906  */
+#line 169 "def.yy" /* yacc.c:1906  */
 
 void idFunction(string param)
 {
@@ -2026,6 +2029,10 @@ void ifStartFunction()
     ifLabels->push(ifCount);
     cout << "------------ PUSHED A LABEL" << endl;
 }
+void ifEndFunction()
+{
+    generateAsmIfEnd();
+}
 void conditionFunctionFirst()
 {
     element e1;
@@ -2178,26 +2185,56 @@ void generateAsmConditionFirst(element variable1, element variable2)
 {
     stringstream ss;
     
-    ss << "lw $t2, " << variable2.varName << "\n";
+    if(variable2.type == types::lc)
+    {
+        ss << "li $t2, " << variable2.varName << "\t#on value type\n";
+    }
+    if(variable2.type == types::id)
+    {
+        ss << "lw $t2, " << variable2.varName << "\t#on variable type\n";
+    }
+    codeAsm->push_back(ss.str());
+    ss.str("");
+    
+    if(variable1.type == types::lc)
+    {
+        ss << "li $t3, " << variable1.varName << "\t#on value type\n";
+    }
+    if(variable1.type == types::id)
+    {
+        ss << "lw $t3, " << variable1.varName << "\t#on variable type\n";
+    }
+    codeAsm->push_back(ss.str());
+    ss.str("");
+    
+/*    ss << "lw $t2, " << variable2.varName << "\n";
     codeAsm->push_back(ss.str());
     ss.str("");
     
     ss << "lw $t3, " << variable1.varName << "\n";
     codeAsm->push_back(ss.str());
-    ss.str("");
+    ss.str("");*/
 }
 void generateAsmConditionSecond()
 {
-    cout << "---------------------generateAsmConditionSecond";
     stringstream ss;
-    //TODO: Trzeba ściągnąc odpowiednią etykietę ze stosu
-/*     int actualLabelNumber = ifLabels->top(); */
-/*     ifLabels->pop(); */
-/*     ss << lastIfOperator << " $t2, $t3, " << "LBL" + actualLabelNumber << "\n\n"; */
-    ss << lastIfOperator << " $t2, $t3, " << "LBL5"  << "\n\n";
+    int actualLabelNumber = ifLabels->top();
+    
+    ss << lastIfOperator << " $t2, $t3, " << "LBL" << actualLabelNumber << "\n\n";
     codeAsm->push_back(ss.str());
     ss.str("");
 }
+void generateAsmIfEnd()
+{
+    stringstream ss;
+    int actualLabelNumber = ifLabels->top();
+    ifLabels->pop();
+    
+    ss << "LBL" << actualLabelNumber << ":" << "\n\n";
+    codeAsm->push_back(ss.str());
+    ss.str("");
+}
+
 
 bool isInSymbols(string name)
 {
@@ -2217,6 +2254,12 @@ void writeLexValue(char * value)
 	fprintf(yyout, "%s ", value);
 }
 
+//TODO Nie dziala przypisanie oraz działania z zerem (np. x = 0)
+//TODO Nie działają łancuchy znakowe - stringi - napisy (zmienna TK)
+//TODO IF-ELSE - oprogramowac else'a
+//TODO Zablokować używanie zmiennych _temp1?
+
+//Do sprawdzenia:
 int main(int argc, char *argv[])
 {
      	if (argc>1) 

@@ -1,6 +1,7 @@
-x = 3
-JEZELI ( x < 5 + 4 ) TO
+x = 10
+JEZELI ( x <= 5 ) TO
 {
-    y = 2
+    PISZ 1
 }
-x = 2
+PISZ 2
+

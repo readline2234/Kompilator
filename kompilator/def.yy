@@ -12,6 +12,7 @@
 
 #define INFILE_ERROR 1
 #define OUTFILE_ERROR 2
+
 void writeLexValue(char *);
 extern int yylineno;
 
@@ -63,6 +64,7 @@ void writeFunction();
 void readFunction();
 
 void ifStartFunction();
+void ifEndFunction();
 void conditionFunctionFirst();
 void conditionFunctionSecond();
 
@@ -79,6 +81,7 @@ void generateAsmPrint(element variable1);
 void generateAsmRead(element variable1);
 void generateAsmConditionFirst(element variable1, element variable2);
 void generateAsmConditionSecond();
+void generateAsmIfEnd();
 
 bool isInSymbols(string name);
 
@@ -118,7 +121,7 @@ single_instruction
         |if_expr                        {}
         ;
 if_expr
-        :if_begin if_mid code_block '}'         {}
+        :if_begin if_mid code_block '}'         { ifEndFunction(); }
         |if_begin if_mid code_block '}' if_else {}
         ;
 if_begin
@@ -436,6 +439,10 @@ void ifStartFunction()
     ifLabels->push(ifCount);
     cout << "------------ PUSHED A LABEL" << endl;
 }
+void ifEndFunction()
+{
+    generateAsmIfEnd();
+}
 void conditionFunctionFirst()
 {
     element e1;
@@ -588,26 +595,56 @@ void generateAsmConditionFirst(element variable1, element variable2)
 {
     stringstream ss;
     
-    ss << "lw $t2, " << variable2.varName << "\n";
+    if(variable2.type == types::lc)
+    {
+        ss << "li $t2, " << variable2.varName << "\t#on value type\n";
+    }
+    if(variable2.type == types::id)
+    {
+        ss << "lw $t2, " << variable2.varName << "\t#on variable type\n";
+    }
+    codeAsm->push_back(ss.str());
+    ss.str("");
+    
+    if(variable1.type == types::lc)
+    {
+        ss << "li $t3, " << variable1.varName << "\t#on value type\n";
+    }
+    if(variable1.type == types::id)
+    {
+        ss << "lw $t3, " << variable1.varName << "\t#on variable type\n";
+    }
+    codeAsm->push_back(ss.str());
+    ss.str("");
+    
+/*    ss << "lw $t2, " << variable2.varName << "\n";
     codeAsm->push_back(ss.str());
     ss.str("");
     
     ss << "lw $t3, " << variable1.varName << "\n";
     codeAsm->push_back(ss.str());
-    ss.str("");
+    ss.str("");*/
 }
 void generateAsmConditionSecond()
 {
-    cout << "---------------------generateAsmConditionSecond";
     stringstream ss;
-    //TODO: Trzeba ściągnąc odpowiednią etykietę ze stosu
-/*     int actualLabelNumber = ifLabels->top(); */
-/*     ifLabels->pop(); */
-/*     ss << lastIfOperator << " $t2, $t3, " << "LBL" + actualLabelNumber << "\n\n"; */
-    ss << lastIfOperator << " $t2, $t3, " << "LBL5"  << "\n\n";
+    int actualLabelNumber = ifLabels->top();
+    
+    ss << lastIfOperator << " $t2, $t3, " << "LBL" << actualLabelNumber << "\n\n";
     codeAsm->push_back(ss.str());
     ss.str("");
 }
+void generateAsmIfEnd()
+{
+    stringstream ss;
+    int actualLabelNumber = ifLabels->top();
+    ifLabels->pop();
+    
+    ss << "LBL" << actualLabelNumber << ":" << "\n\n";
+    codeAsm->push_back(ss.str());
+    ss.str("");
+}
+
 
 bool isInSymbols(string name)
 {
@@ -627,6 +664,12 @@ void writeLexValue(char * value)
 	fprintf(yyout, "%s ", value);
 }
 
+//TODO Nie dziala przypisanie oraz działania z zerem (np. x = 0)
+//TODO Nie działają łancuchy znakowe - stringi - napisy (zmienna TK)
+//TODO IF-ELSE - oprogramowac else'a
+//TODO Zablokować używanie zmiennych _temp1?
+
+//Do sprawdzenia:
 int main(int argc, char *argv[])
 {
      	if (argc>1) 

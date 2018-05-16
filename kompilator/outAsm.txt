@@ -1,18 +1,17 @@
-li $t0, 3	#type: 	0	def to value
+li $t0, 10	#type: 	0	def to value
 sw $t0, x
 
-li $t0, 5	#type: 	0	add to value
-	li $t1, 4	#type: 	0	add to value
-add $t0, $t0, $t1
-sw $t0, _tmp1
+lw $t2, x	#on variable type
+li $t3, 5	#on value type
+bgt $t2, $t3, LBL1
 
-lw $t2, x
-lw $t3, _tmp1
-bge $t2, $t3, LBL5
+li $v0, 1
+li $a0, 1	#type: 	0	print - value
+	syscall
 
-li $t0, 2	#type: 	0	def to value
-sw $t0, y
+LBL1:
 
-li $t0, 2	#type: 	0	def to value
-sw $t0, x
+li $v0, 1
+li $a0, 2	#type: 	0	print - value
+	syscall
 
